@@ -1,0 +1,50 @@
+name: Lighthouse
+
+on:
+  schedule:
+    - cron: '0 15 * * 1'
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Run Lighthouse (desktop)
+        run: pnpm --filter @unsaid/web run lighthouse
+        env:
+          PUBLIC_API_URL: https://unsaid-api.workers.dev
+          PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+
+      - name: Run Lighthouse (mobile)
+        run: pnpm --filter @unsaid/web run lighthouse:mobile
+        env:
+          PUBLIC_API_URL: https://unsaid-api.workers.dev
+          PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-desktop
+          path: apps/web/.lighthouseci/
+          retention-days: 30
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-mobile
+          path: apps/web/.lighthouseci-mobile/
+          retention-days: 30

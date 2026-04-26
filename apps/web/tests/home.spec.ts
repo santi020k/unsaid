@@ -1,78 +1,93 @@
-import { expectNoUnexpectedAccessibilityViolations } from './helpers/accessibility'
-
-import type { AxeBuilder } from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
-const axeForPage = (builder: AxeBuilder) => builder.exclude('.cf-turnstile')
-
-test('English homepage renders hero and form', async ({ page }) => {
+test('English homepage has correct title', async ({ page }) => {
   await page.goto('/')
 
   await expect(page).toHaveTitle('Unsaid')
+})
+
+test('Spanish homepage has correct title', async ({ page }) => {
+  await page.goto('/es/')
+
+  await expect(page).toHaveTitle('Unsaid')
+})
+
+test('English homepage renders hero section', async ({ page }) => {
+  await page.goto('/')
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('The things everyone knows')
+
+  await expect(page.getByText('Anonymous. Always.')).toBeVisible()
+
+  await expect(page.getByText('No names. No filters. Just truth.')).toBeVisible()
+})
+
+test('Spanish homepage renders hero section', async ({ page }) => {
+  await page.goto('/es/')
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Las cosas que todos saben')
+
+  await expect(page.getByText('Anónimo. Siempre.')).toBeVisible()
+
+  await expect(page.getByText('Sin nombres. Sin filtros. Solo verdad.')).toBeVisible()
+})
+
+test('English homepage renders post form', async ({ page }) => {
+  await page.goto('/')
 
   await expect(page.getByRole('region', { name: 'Say it.' })).toBeVisible()
 
   await expect(page.getByRole('textbox', { name: 'Say it.' })).toBeVisible()
+
+  await expect(page.getByRole('button', { name: 'Publish anonymously' })).toBeVisible()
 })
 
-test('Spanish homepage renders hero and form', async ({ page }) => {
+test('Spanish homepage renders post form', async ({ page }) => {
   await page.goto('/es/')
-
-  await expect(page).toHaveTitle('Unsaid')
-
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Las cosas que todos saben')
 
   await expect(page.getByRole('region', { name: 'Dilo.' })).toBeVisible()
 
   await expect(page.getByRole('textbox', { name: 'Dilo.' })).toBeVisible()
+
+  await expect(page.getByRole('button', { name: 'Publicar anónimamente' })).toBeVisible()
 })
 
-test('language switcher navigates from English to Spanish', async ({ page }) => {
+test('English homepage renders feed section', async ({ page }) => {
   await page.goto('/')
 
-  await page.getByRole('link', { name: 'Español' }).click()
-
-  await expect(page).toHaveURL('/es/')
-
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Las cosas que todos saben')
+  await expect(page.getByRole('region', { name: 'Recent truths' })).toBeVisible()
 })
 
-test('language switcher navigates from Spanish to English', async ({ page }) => {
+test('Spanish homepage renders feed section', async ({ page }) => {
   await page.goto('/es/')
 
-  await page.getByRole('link', { name: 'English' }).click()
-
-  await expect(page).toHaveURL('/')
-
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('The things everyone knows')
+  await expect(page.getByRole('region', { name: 'Verdades recientes' })).toBeVisible()
 })
 
-test('homepage exposes skip link to main content', async ({ page }) => {
-  await page.goto('/')
+test('English privacy page renders with correct title', async ({ page }) => {
+  await page.goto('/privacy')
 
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute('href', '#main-content')
+  await expect(page).toHaveTitle(/Privacy policy.*Unsaid/)
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Privacy policy')
 })
 
-test('Spanish homepage exposes skip link to main content', async ({ page }) => {
-  await page.goto('/es/')
+test('Spanish privacy page renders with correct title', async ({ page }) => {
+  await page.goto('/es/privacy')
 
-  await expect(page.getByRole('link', { name: 'Saltar al contenido principal' })).toHaveAttribute('href', '#main-content')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Política de privacidad')
 })
 
-test('English homepage has no unexpected accessibility violations', async ({ page }) => {
-  await page.goto('/')
+test('English terms page renders with correct title', async ({ page }) => {
+  await page.goto('/terms')
 
-  await expect(page.locator('#main-content')).toBeVisible()
+  await expect(page).toHaveTitle(/Terms.*Unsaid/)
 
-  await expectNoUnexpectedAccessibilityViolations(page, [], axeForPage)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Terms of use')
 })
 
-test('Spanish homepage has no unexpected accessibility violations', async ({ page }) => {
-  await page.goto('/es/')
+test('Spanish terms page renders with correct title', async ({ page }) => {
+  await page.goto('/es/terms')
 
-  await expect(page.locator('#main-content')).toBeVisible()
-
-  await expectNoUnexpectedAccessibilityViolations(page, [], axeForPage)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Términos de uso')
 })

@@ -11,7 +11,9 @@
     "lint:fix": "eslint . --fix",
     "check": "astro check",
     "test": "playwright test",
-    "test:install": "playwright install chromium"
+    "test:install": "playwright install chromium",
+    "lighthouse": "lhci autorun --config=lighthouserc.cjs",
+    "lighthouse:mobile": "lhci autorun --config=lighthouserc.mobile.cjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.2.1",
@@ -26,6 +28,7 @@
     "@astrojs/check": "^0.9.8",
     "@astrojs/ts-plugin": "^1.10.7",
     "@axe-core/playwright": "^4.11.2",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.49.0",
     "@santi020k/eslint-config-astro": "^1.5.0",
     "@santi020k/eslint-config-basic": "^1.5.0",
