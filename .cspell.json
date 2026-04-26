@@ -32,6 +32,7 @@
     ".astro",
     ".wrangler",
     "*.lock",
-    ".vscode"
+    ".vscode",
+    ".agent"
   ]
 }
