@@ -53,7 +53,7 @@ test('Spanish homepage has meta description', async ({ page }) => {
 
   const text = await meta.getAttribute('content')
 
-  expect(text!.length).toBeGreaterThan(10)
+  expect(text?.length ?? 0).toBeGreaterThan(10)
 })
 
 // ── Open Graph ───────────────────────────────────────────────────────────────

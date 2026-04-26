@@ -36,6 +36,15 @@ export default [
     name: 'web/ignores',
     ignores: ['.astro/**', 'dist/**', 'node_modules/**']
   },
+  {
+    name: 'web/lighthouse-ci-commonjs',
+    files: ['lighthouserc.cjs', 'lighthouserc.mobile.cjs'],
+    languageOptions: {
+      globals: {
+        module: 'writable'
+      }
+    }
+  },
   ...playwright.map(config => ({
     ...config,
     name: `web/${config.name ?? 'playwright-tests'}`,

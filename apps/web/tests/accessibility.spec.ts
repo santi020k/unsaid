@@ -1,7 +1,7 @@
 import { expectNoUnexpectedAccessibilityViolations } from './helpers/accessibility'
 
 import type { AxeBuilder } from '@axe-core/playwright'
-import { test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 const withoutTurnstile = (builder: AxeBuilder) => builder.exclude('.cf-turnstile')
 
@@ -10,7 +10,7 @@ const withoutTurnstile = (builder: AxeBuilder) => builder.exclude('.cf-turnstile
 test('English homepage has no accessibility violations', async ({ page }) => {
   await page.goto('/')
 
-  await page.locator('#main-content').waitFor({ state: 'visible' })
+  await expect(page.locator('#main-content')).toBeVisible()
 
   await expectNoUnexpectedAccessibilityViolations(page, [], withoutTurnstile)
 })
@@ -18,7 +18,7 @@ test('English homepage has no accessibility violations', async ({ page }) => {
 test('Spanish homepage has no accessibility violations', async ({ page }) => {
   await page.goto('/es/')
 
-  await page.locator('#main-content').waitFor({ state: 'visible' })
+  await expect(page.locator('#main-content')).toBeVisible()
 
   await expectNoUnexpectedAccessibilityViolations(page, [], withoutTurnstile)
 })
@@ -28,7 +28,7 @@ test('Spanish homepage has no accessibility violations', async ({ page }) => {
 test('English privacy page has no accessibility violations', async ({ page }) => {
   await page.goto('/privacy')
 
-  await page.locator('#main-content').waitFor({ state: 'visible' })
+  await expect(page.locator('#main-content')).toBeVisible()
 
   await expectNoUnexpectedAccessibilityViolations(page)
 })
@@ -36,7 +36,7 @@ test('English privacy page has no accessibility violations', async ({ page }) =>
 test('Spanish privacy page has no accessibility violations', async ({ page }) => {
   await page.goto('/es/privacy')
 
-  await page.locator('#main-content').waitFor({ state: 'visible' })
+  await expect(page.locator('#main-content')).toBeVisible()
 
   await expectNoUnexpectedAccessibilityViolations(page)
 })
@@ -44,7 +44,7 @@ test('Spanish privacy page has no accessibility violations', async ({ page }) =>
 test('English terms page has no accessibility violations', async ({ page }) => {
   await page.goto('/terms')
 
-  await page.locator('#main-content').waitFor({ state: 'visible' })
+  await expect(page.locator('#main-content')).toBeVisible()
 
   await expectNoUnexpectedAccessibilityViolations(page)
 })
@@ -52,7 +52,7 @@ test('English terms page has no accessibility violations', async ({ page }) => {
 test('Spanish terms page has no accessibility violations', async ({ page }) => {
   await page.goto('/es/terms')
 
-  await page.locator('#main-content').waitFor({ state: 'visible' })
+  await expect(page.locator('#main-content')).toBeVisible()
 
   await expectNoUnexpectedAccessibilityViolations(page)
 })
