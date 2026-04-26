@@ -1,4 +1,4 @@
-import { Hono } from 'hono'
+import { type Context, Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 
@@ -11,7 +11,7 @@ app.use('*', logger())
 
 app.use(
   '/api/*', cors({
-    origin: (_, c) => c.env.ALLOWED_ORIGIN,
+    origin: (_origin, c: Context<{ Bindings: Bindings }>) => c.env.ALLOWED_ORIGIN,
     allowMethods: ['GET', 'POST', 'OPTIONS'],
     allowHeaders: ['Content-Type'],
     maxAge: 86400

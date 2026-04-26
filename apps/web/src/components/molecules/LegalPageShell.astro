@@ -27,12 +27,12 @@ const { locale, title, description, lastUpdatedLabel } = Astro.props
     </p>
     <div
       class="
-        space-y-8 text-sm leading-relaxed text-text-muted
-        [&_h2]:pt-1 [&_h2]:text-base [&_h2]:font-medium [&_h2]:text-text-primary
-        [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5
+        space-y-8 text-sm/relaxed text-text-muted
         [&_a]:text-text-primary [&_a]:underline [&_a]:decoration-dotted
         [&_a]:transition-colors
         hover:[&_a]:text-accent
+        [&_h2]:pt-1 [&_h2]:text-base [&_h2]:font-medium [&_h2]:text-text-primary
+        [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5
       "
     >
       <slot />

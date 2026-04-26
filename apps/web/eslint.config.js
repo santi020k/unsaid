@@ -22,6 +22,20 @@ export default [
     }
   },
   {
+    name: 'web/lighthouse-cjs',
+    files: ['lighthouserc.cjs', 'lighthouserc.mobile.cjs'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: {
+        module: 'readonly',
+        require: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        exports: 'readonly'
+      }
+    }
+  },
+  {
     name: 'web/astro-overrides',
     files: ['**/*.astro'],
     rules: {

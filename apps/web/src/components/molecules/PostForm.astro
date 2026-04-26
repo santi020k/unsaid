@@ -55,10 +55,22 @@ const charCountTemplate = t('form.chars_left', { n: '__N__' })
 
       <!-- Turnstile left, submit right on sm+; stacked on narrow screens so ~300px widget + label fit. -->
       <div
-        class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+        class="
+          flex flex-col gap-4
+          sm:flex-row sm:items-center sm:justify-between sm:gap-6
+        "
       >
         <div
-          class="turnstile-host flex shrink-0 justify-center sm:justify-start [&_.cf-turnstile]:inline-block [&_.cf-turnstile_iframe]:max-w-full [&_.cf-turnstile_iframe]:rounded-card [&_.cf-turnstile_iframe]:border [&_.cf-turnstile_iframe]:border-border/50 [&_.cf-turnstile_iframe]:shadow-none"
+          class="
+            turnstile-host flex shrink-0 justify-center
+            sm:justify-start
+            [&_.cf-turnstile]:inline-block
+            [&_.cf-turnstile_iframe]:max-w-full
+            [&_.cf-turnstile_iframe]:rounded-card
+            [&_.cf-turnstile_iframe]:border
+            [&_.cf-turnstile_iframe]:border-border/50
+            [&_.cf-turnstile_iframe]:shadow-none
+          "
         >
           <div
             class="cf-turnstile"
@@ -68,7 +80,14 @@ const charCountTemplate = t('form.chars_left', { n: '__N__' })
           >
           </div>
         </div>
-        <Button type="submit" class="w-full shrink-0 sm:w-auto sm:self-center" id="submit-btn">
+        <Button
+          type="submit"
+          class="
+            w-full shrink-0
+            sm:w-auto sm:self-center
+          "
+          id="submit-btn"
+        >
           {t('form.submit')}
         </Button>
       </div>
@@ -97,72 +116,109 @@ const charCountTemplate = t('form.chars_left', { n: '__N__' })
     errNetwork: t('form.error.network')
   }}
 >
-  const form = document.getElementById('post-form')
-  const textarea = document.getElementById('post-content')
-  /** Astro/ESLint-friendly multiline textarea leaves whitespace-only body; strip so caret starts at line 1. */
-  if (textarea) textarea.value = textarea.value.trimStart()
-  const charCount = document.getElementById('char-count')
-  const statusEl = document.getElementById('form-status')
-  const submitBtn = document.getElementById('submit-btn')
+const form = document.getElementById('post-form')
+const textarea = document.getElementById('post-content')
 
-  function setCharCountRemaining(remaining) {
-    if (!charCount) return
-    charCount.textContent = charCountTemplate.replace('__N__', String(remaining))
+/** Astro/ESLint-friendly multiline textarea leaves whitespace-only body; strip so caret starts at line 1. */
+if (textarea) textarea.value = textarea.value.trimStart()
+
+const charCount = document.getElementById('char-count')
+const statusEl = document.getElementById('form-status')
+const submitBtn = document.getElementById('submit-btn')
+
+function setCharCountRemaining(remaining) {
+  if (!charCount) return
+
+  charCount.textContent = charCountTemplate.replace('__N__', String(remaining))
+}
+
+textarea?.addEventListener('input', () => {
+  setCharCountRemaining(maxLen - textarea.value.length)
+})
+
+function showStatus(msg, isError = false) {
+  if (!statusEl) return
+
+  statusEl.textContent = msg
+
+  statusEl.classList.remove('hidden', 'text-text-muted', 'text-danger', 'text-success')
+
+  statusEl.classList.add(isError ? 'text-danger' : 'text-success')
+}
+
+form?.addEventListener('submit', async e => {
+  e.preventDefault()
+
+  const content = textarea?.value.trim() ?? ''
+
+  if (content.length < minLen) {
+    showStatus(errShort, true)
+
+    return
   }
 
-  textarea?.addEventListener('input', () => {
-    setCharCountRemaining(maxLen - textarea.value.length)
-  })
+  if (content.length > maxLen) {
+    showStatus(errLong, true)
 
-  function showStatus(msg, isError = false) {
-    if (!statusEl) return
-    statusEl.textContent = msg
-    statusEl.classList.remove('hidden', 'text-text-muted', 'text-danger', 'text-success')
-    statusEl.classList.add(isError ? 'text-danger' : 'text-success')
+    return
   }
 
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault()
+  const token = document.querySelector('[name="cf-turnstile-response"]')?.value
 
-    const content = textarea?.value.trim() ?? ''
-    if (content.length < minLen) { showStatus(errShort, true); return }
-    if (content.length > maxLen) { showStatus(errLong, true); return }
+  if (!token) {
+    showStatus(errCaptcha, true)
 
-    const token = document.querySelector('[name="cf-turnstile-response"]')?.value
-    if (!token) { showStatus(errCaptcha, true); return }
+    return
+  }
 
-    submitBtn?.setAttribute('disabled', '')
-    if (submitBtn) submitBtn.textContent = msgSubmitting
+  submitBtn?.setAttribute('disabled', '')
 
-    try {
-      const res = await fetch(`${apiUrl}/api/posts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, locale, captchaToken: token }),
-      })
+  if (submitBtn) submitBtn.textContent = msgSubmitting
 
-      if (res.status === 429) { showStatus(errLimit, true); return }
-      if (!res.ok) { showStatus(errGeneric, true); return }
+  try {
+    const res = await fetch(`${apiUrl}/api/posts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content, locale, captchaToken: token })
+    })
 
-      showStatus(msgSuccess, false)
-      form.reset()
-      if (textarea) textarea.value = textarea.value.trimStart()
-      setCharCountRemaining(maxLen)
-      window.turnstile?.reset()
-      window.dispatchEvent(new CustomEvent('truth:published'))
-    } catch (err) {
-      const isNetwork =
-        err instanceof TypeError
-        && /failed to fetch|networkerror|load failed|internet disconnected/i.test(
-          String(err.message)
-        )
-      showStatus(
-        isNetwork ? errNetwork : errGeneric,
-        true
-      )
-    } finally {
-      submitBtn?.removeAttribute('disabled')
-      if (submitBtn) submitBtn.textContent = msgSubmit
+    if (res.status === 429) {
+      showStatus(errLimit, true)
+
+      return
     }
-  })
+
+    if (!res.ok) {
+      showStatus(errGeneric, true)
+
+      return
+    }
+
+    showStatus(msgSuccess, false)
+
+    form.reset()
+
+    if (textarea) textarea.value = textarea.value.trimStart()
+
+    setCharCountRemaining(maxLen)
+
+    window.turnstile?.reset()
+
+    window.dispatchEvent(new CustomEvent('truth:published'))
+  } catch (err) {
+    const isNetwork =
+      err instanceof TypeError &&
+      /failed to fetch|networkerror|load failed|internet disconnected/i.test(
+        String(err.message)
+      )
+
+    showStatus(
+      isNetwork ? errNetwork : errGeneric, true
+    )
+  } finally {
+    submitBtn?.removeAttribute('disabled')
+
+    if (submitBtn) submitBtn.textContent = msgSubmit
+  }
+})
 </script>

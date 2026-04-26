@@ -94,8 +94,9 @@ const websiteJsonLd = {
     <a href="#main-content" class="skip-link">{t('nav.skip_to_content')}</a>
 
     <header class="
-      sticky top-0 z-40 border-b border-border bg-void/90 backdrop-blur-sm
-      animate-header-enter motion-reduce:animate-none
+      sticky top-0 z-40 animate-header-enter border-b border-border bg-void/90
+      backdrop-blur-sm
+      motion-reduce:animate-none
     "
     >
       <nav
@@ -155,7 +156,10 @@ const websiteJsonLd = {
             </a>
           </p>
           <p class="text-xs text-text-faint">{t('footer.privacy')}</p>
-          <nav aria-label={t('footer.legal_nav_aria')} class="flex flex-wrap gap-x-3 gap-y-1 text-xs">
+          <nav
+            aria-label={t('footer.legal_nav_aria')}
+            class="flex flex-wrap gap-x-3 gap-y-1 text-xs"
+          >
             <a
               href={locale === 'en' ? '/privacy' : '/es/privacy'}
               class="footer-link"

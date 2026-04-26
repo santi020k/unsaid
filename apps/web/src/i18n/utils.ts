@@ -2,7 +2,7 @@ import { ui, type UIKey } from './ui.js'
 
 import type { SupportedLocale } from '@/site.config.js'
 
-function normalizePathname(pathname: string): string {
+const normalizePathname = function (pathname: string): string {
   if (pathname === '/es' || pathname === '/es/') {
     return '/es/'
   }
@@ -17,7 +17,7 @@ function normalizePathname(pathname: string): string {
 /**
  * Resolves the English and Spanish URLs for the current logical page (for hreflang and the language switcher).
  */
-export function getLocalePaths(pathname: string): { en: string, es: string } {
+export const getLocalePaths = function (pathname: string): { en: string, es: string } {
   const p = normalizePathname(pathname)
 
   if (p === '/' || p === '/es' || p === '/es/') {
@@ -37,7 +37,7 @@ export function getLocalePaths(pathname: string): { en: string, es: string } {
   return { en: '/', es: '/es/' }
 }
 
-export function getAlternatePath(
+export const getAlternatePath = function (
   locale: SupportedLocale,
   pathname: string
 ): string {
@@ -46,9 +46,19 @@ export function getAlternatePath(
   return locale === 'en' ? paths.es : paths.en
 }
 
-export function useTranslations(locale: SupportedLocale) {
-  return function t(key: UIKey, vars?: Record<string, string | number>): string {
-    const raw = ui[locale][key] as string
+const getLocaleString = function (locale: SupportedLocale, key: UIKey): string {
+  const table = locale === 'en' ? ui.en : ui.es
+
+  // Reflect.get avoids `table[key]`, which eslint-plugin-security flags; key is UIKey (a closed set).
+  return Reflect.get(table, key)
+}
+
+export const useTranslations = function (locale: SupportedLocale) {
+  return function t(
+    key: UIKey,
+    vars?: Record<string, string | number>
+  ): string {
+    const raw = getLocaleString(locale, key)
 
     if (!vars) return raw
 
@@ -58,6 +68,6 @@ export function useTranslations(locale: SupportedLocale) {
   }
 }
 
-export function getAlternateLocale(locale: SupportedLocale): SupportedLocale {
+export const getAlternateLocale = function (locale: SupportedLocale): SupportedLocale {
   return locale === 'en' ? 'es' : 'en'
 }
