@@ -13,9 +13,10 @@ interface Props {
   locale: SupportedLocale
 }
 
-const { title, description = SITE.description, locale } = Astro.props
-const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name
+const { title, locale } = Astro.props
 const t = useTranslations(locale)
+const description = Astro.props.description ?? t('site.description')
+const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name
 const altPath = getAlternatePath(locale, Astro.url.pathname)
 const site = Astro.site ?? new URL(SITE.url)
 const canonicalURL = new URL(Astro.url.pathname, site).href
@@ -32,7 +33,7 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: SITE.name,
   url: enUrl,
-  description: SITE.description,
+  description: t('site.description'),
   inLanguage: ['en', 'es']
 }
 
@@ -87,7 +88,7 @@ const footerLegalLinks = [
     <meta property="og:image" content={ogImageUrl} />
     <meta
       property="og:image:alt"
-      content="Unsaid — The things everyone knows. The things nobody says."
+      content={t('meta.og_image_alt')}
     />
 
     <!-- Twitter -->

@@ -15,88 +15,49 @@ const t = useTranslations(locale)
   lastUpdatedLabel={t('legal.last_updated')}
 >
   <section>
-    <h2>Resumen</h2>
-    <p>
-      Unsaid está pensado para ser anónimo. No hay cuentas de usuario, no usamos
-      cookies de marketing propias, y no vendemos tu información personal. Esta
-      página explica qué debe procesar el servicio y su infraestructura para que
-      el sitio funcione, esté disponible y pueda contener abusos.
-    </p>
+    <h2>{t('privacy.summary_title')}</h2>
+    <p>{t('privacy.summary_body')}</p>
   </section>
   <section>
-    <h2>Contenido que ves y compartes</h2>
-    <p>
-      Las publicaciones se almacenan y se muestran para que otras personas las
-      vean. Conservamos lo necesario para el feed, incluido el texto, el idioma,
-      identificadores requeridos por la base de datos, y la fecha. Las publicaciones
-      son públicas. No compartas secretos ni datos que no puedas publicar
-      abiertamente.
-    </p>
+    <h2>{t('privacy.content_title')}</h2>
+    <p>{t('privacy.content_body')}</p>
   </section>
   <section>
-    <h2>Protección frente al abuso y datos técnicos de breve retención</h2>
-    <p>
-      Para limitar el spam usamos un CAPTCHA (Cloudflare Turnstile) y un límite
-      diario de publicaciones por dirección IP. Para ese límite puede guardarse
-      de forma breve en el edge una clave vinculada a tu IP, con una retención
-      en el orden de un día, para contar y hacer cumplir el tope. El CAPTCHA
-      se valida al publicar; el token no se guarda en nuestro servidor como
-      parte de la publicación. El tráfico puede transitar por la red del
-      operador (por ejemplo Cloudflare) y estar sujeto a las prácticas
-      de registro y seguridad descritas en la política de dicho proveedor.
-    </p>
+    <h2>{t('privacy.abuse_title')}</h2>
+    <p>{t('privacy.abuse_body')}</p>
   </section>
   <section>
-    <h2>Sin registro, sin perfil analítico</h2>
-    <p>
-      No mantenemos cuentas ni un perfil tuyo. No usamos tus datos para publicidad
-      segmentada. Tu explorador y dispositivo aún envían la información que es
-      habitual en cualquier sitio (por ejemplo IP y user-agent); nuestro
-      objetivo es emplear el mínimo que el proveedor y la plataforma requieran
-      para servir y proteger la app.
-    </p>
+    <h2>{t('privacy.no_profile_title')}</h2>
+    <p>{t('privacy.no_profile_body')}</p>
   </section>
   <section>
-    <h2>Traducción automática</h2>
-    <p>
-      En algunos casos generamos una versión traducida de una publicación para
-      mostrarla en otro idioma. La traducción se obtiene a partir del texto
-      público.
-    </p>
+    <h2>{t('privacy.translation_title')}</h2>
+    <p>{t('privacy.translation_body')}</p>
   </section>
   <section>
-    <h2>Tu elección</h2>
-    <p>
-      Puedes dejar de usar el sitio, dejar de publicar, o emplear un
-      explorador y una red de confianza. No utilices Unsaid si el
-      procesamiento descrito no te resulta aceptable.
-    </p>
+    <h2>{t('privacy.choices_title')}</h2>
+    <p>{t('privacy.choices_body')}</p>
   </section>
   <section>
-    <h2>Contacto</h2>
+    <h2>{t('privacy.contact_title')}</h2>
     <p>
-      El proyecto está
+      {t('privacy.contact_prefix')}{' '}
       <a
         href={SITE.repositoryUrl}
         target="_blank"
         rel="noopener noreferrer"
-      >abierto en GitHub
-      </a>. Puedes contactar con quien mantiene el
-      proyecto desde el
+      >{t('privacy.contact_github')}
+      </a>{t('privacy.contact_middle')}{' '}
       <a
         href={SITE.authorUrl}
         target="_blank"
         rel="noopener noreferrer"
-      >sitio del autor
-      </a> en el pie de página.
+      >{t('privacy.contact_author')}
+      </a> {t('privacy.contact_suffix')}
     </p>
   </section>
   <section>
-    <h2>Cambios</h2>
-    <p>
-      Esta política puede actualizarse. La línea «Última actualización» al
-      inicio refleja cambios relevantes. Si sigues usando el sitio tras la
-      publicación de los cambios, aceptas la descripción actualizada.
-    </p>
+    <h2>{t('privacy.changes_title')}</h2>
+    <p>{t('privacy.changes_body')}</p>
   </section>
 </LegalPageShell>

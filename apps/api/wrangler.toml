@@ -12,13 +12,18 @@ migrations_dir = "migrations"
 [[kv_namespaces]]
 binding = "RATE_LIMIT"
 id = "REPLACE_WITH_YOUR_KV_ID"
+preview_id = "REPLACE_WITH_YOUR_PREVIEW_KV_ID"
 
 [vars]
 ALLOWED_ORIGIN = "http://localhost:4321"
+ENABLE_AUTO_TRANSLATION = "false"
+TURNSTILE_ALLOWED_HOSTNAMES = ""
 
 # Production vars are set via Cloudflare dashboard (not committed):
 # TURNSTILE_SECRET_KEY = "..."
 # ALLOWED_ORIGIN = "https://unsaid.santi020k.com"
+# ENABLE_AUTO_TRANSLATION = "true"
+# TURNSTILE_ALLOWED_HOSTNAMES = "unsaid.santi020k.com,www.unsaid.santi020k.com"
 
 [dev]
 port = 8787

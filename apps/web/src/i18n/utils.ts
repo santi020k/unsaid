@@ -67,7 +67,3 @@ export const useTranslations = function (locale: SupportedLocale) {
     )
   }
 }
-
-export const getAlternateLocale = function (locale: SupportedLocale): SupportedLocale {
-  return locale === 'en' ? 'es' : 'en'
-}

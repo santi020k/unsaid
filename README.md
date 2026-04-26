@@ -103,8 +103,6 @@ pnpm --filter @unsaid/api exec wrangler d1 execute unsaid-db --local --file=sche
 | `pnpm test` | Run test suites |
 | `pnpm spellcheck` | cspell on Markdown and JSON files |
 | `pnpm knip` | Detect unused exports and dependencies |
-| `pnpm commit` | Guided Conventional Commit prompt |
-
 ## Contributing
 
 This project enforces Conventional Commits via a `commit-msg` hook:

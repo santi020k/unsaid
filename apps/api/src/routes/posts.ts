@@ -7,18 +7,24 @@ import { validateTurnstile } from '../middleware/turnstile.js'
 import type { Bindings } from '../types.js'
 
 import { zValidator } from '@hono/zod-validator'
-import { POST_MAX_LENGTH, POST_MIN_LENGTH } from '@unsaid/shared'
+import { type Post, POST_MAX_LENGTH, POST_MIN_LENGTH, type PostsResponse } from '@unsaid/shared'
 
 /** Row shape returned by INSERT … RETURNING (D1). */
-interface InsertedPostRow {
-  id: string
-  content: string
-  locale: string
-  translation_of: string | null
-  created_at: string
+type InsertedPostRow = Post
+
+interface CountRow {
+  total: number
 }
 
-const posts = new Hono<{ Bindings: Bindings }>()
+const FEED_MAX_LIMIT = 50
+const FEED_DEFAULT_LIMIT = 20
+const numericQueryParam = z.string().regex(/^\d+$/)
+
+const getPostsQuerySchema = z.object({
+  locale: z.enum(['en', 'es']).optional(),
+  page: numericQueryParam.optional(),
+  limit: numericQueryParam.optional()
+})
 
 const createPostSchema = z.object({
   content: z.string().min(POST_MIN_LENGTH).max(POST_MAX_LENGTH),
@@ -26,19 +32,42 @@ const createPostSchema = z.object({
   captchaToken: z.string().min(1)
 })
 
-const clampFeedLimit = (raw: string | undefined): number => {
-  const n = parseInt(raw ?? '20', 10)
+const validationError = { error: 'Invalid request.' } as const
 
-  if (!Number.isFinite(n) || n < 1) return 20
+const createPostValidator = zValidator('json', createPostSchema, (result, c) => {
+  if (!result.success) {
+    return c.json(validationError, 400)
+  }
+})
 
-  return Math.min(50, n)
+const isAutoTranslationEnabled = (raw: string | undefined): boolean => raw === 'true'
+
+const toPositiveInteger = (raw: string | undefined, fallback: number): number => {
+  if (!raw) return fallback
+
+  const n = Number(raw)
+
+  if (!Number.isSafeInteger(n) || n < 1) return fallback
+
+  return n
 }
 
+const posts = new Hono<{ Bindings: Bindings }>()
+
 posts.get('/', async c => {
-  const locale = c.req.query('locale')
-  const pageRaw = c.req.query('page') ?? '1'
-  const page = Math.max(1, parseInt(pageRaw, 10) || 1)
-  const limit = clampFeedLimit(c.req.query('limit'))
+  const parsedQuery = getPostsQuerySchema.safeParse({
+    locale: c.req.query('locale'),
+    page: c.req.query('page'),
+    limit: c.req.query('limit')
+  })
+
+  if (!parsedQuery.success) {
+    return c.json(validationError, 400)
+  }
+
+  const { locale } = parsedQuery.data
+  const page = toPositiveInteger(parsedQuery.data.page, 1)
+  const limit = Math.min(FEED_MAX_LIMIT, toPositiveInteger(parsedQuery.data.limit, FEED_DEFAULT_LIMIT))
   const offset = (page - 1) * limit
 
   const query = locale ?
@@ -46,18 +75,20 @@ posts.get('/', async c => {
     'SELECT id, content, locale, translation_of, created_at FROM posts ORDER BY created_at DESC LIMIT ? OFFSET ?'
 
   const { results } = locale ?
-    await c.env.DB.prepare(query).bind(locale, limit, offset).all() :
-    await c.env.DB.prepare(query).bind(limit, offset).all()
+    await c.env.DB.prepare(query).bind(locale, limit, offset).all<Post>() :
+    await c.env.DB.prepare(query).bind(limit, offset).all<Post>()
 
   const { results: countResult } = locale ?
-    await c.env.DB.prepare('SELECT COUNT(*) as total FROM posts WHERE locale = ?').bind(locale).all() :
-    await c.env.DB.prepare('SELECT COUNT(*) as total FROM posts').all()
+    await c.env.DB.prepare('SELECT COUNT(*) as total FROM posts WHERE locale = ?').bind(locale).all<CountRow>() :
+    await c.env.DB.prepare('SELECT COUNT(*) as total FROM posts').all<CountRow>()
 
-  return c.json({ data: { posts: results, total: (countResult[0] as { total: number }).total } })
+  const data: PostsResponse = { posts: results, total: countResult[0]?.total ?? 0 }
+
+  return c.json({ data })
 })
 
 posts.post(
-  '/', validateTurnstile, rateLimiter, zValidator('json', createPostSchema), async c => {
+  '/', validateTurnstile, rateLimiter, createPostValidator, async c => {
     const { content, locale } = c.req.valid('json')
 
     const post = await c.env.DB.prepare(
@@ -68,7 +99,7 @@ posts.post(
       .bind(content.trim(), locale)
       .first<InsertedPostRow>()
 
-    if (post) {
+    if (post && isAutoTranslationEnabled(c.env.ENABLE_AUTO_TRANSLATION)) {
       c.executionCtx.waitUntil(
         mirrorPostTranslation(c.env.DB, {
           sourceId: post.id,

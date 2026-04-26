@@ -24,7 +24,7 @@ const matchesAllowedNode = (
   return matchesHtml && matchesTarget
 }
 
-export type ConfigureAxe = (builder: AxeBuilder) => AxeBuilder
+type ConfigureAxe = (builder: AxeBuilder) => AxeBuilder
 
 /**
  * Runs axe-core after finite CSS animations settle (avoids false color-contrast

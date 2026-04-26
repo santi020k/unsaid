@@ -223,6 +223,8 @@ pnpm --filter @unsaid/web dev
 |---|---|---|
 | `TURNSTILE_SECRET_KEY` | `wrangler secret put` | Turnstile secret (never commit) |
 | `ALLOWED_ORIGIN` | `wrangler secret put` | Permitted CORS origin |
+| `TURNSTILE_ALLOWED_HOSTNAMES` | Worker variable | Comma-separated hostnames accepted from Turnstile verification |
+| `ENABLE_AUTO_TRANSLATION` | Worker variable | Set to `true` only if public post text may be sent to the translation provider |
 | `DB` | `wrangler.toml` binding | D1 database binding |
 | `RATE_LIMIT` | `wrangler.toml` binding | KV namespace binding |
 

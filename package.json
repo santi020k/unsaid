@@ -14,7 +14,6 @@
     "test": "turbo run test",
     "spellcheck": "cspell '**/*.{md,json}' --no-progress --exclude '**/node_modules/**' --exclude '**/dist/**'",
     "knip": "knip",
-    "commit": "cz",
     "pre-commit": "lint-staged --quiet",
     "pre-push": "pnpm run spellcheck && turbo run lint check",
     "prepare": "husky"
@@ -40,6 +39,9 @@
     ]
   },
   "pnpm": {
+    "overrides": {
+      "yaml": "^2.8.3"
+    },
     "onlyBuiltDependencies": [
       "esbuild",
       "sharp",

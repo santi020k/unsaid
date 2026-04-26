@@ -13,7 +13,7 @@ const truncateGraphemes = (text: string, max: number): string => {
 /**
  * Free tier machine translation (MyMemory). Fails softly on quota or network errors.
  */
-export const translateMyMemory = async (text: string, from: Locale, to: Locale): Promise<string | null> => {
+const translateMyMemory = async (text: string, from: Locale, to: Locale): Promise<string | null> => {
   if (from === to) return null
 
   const langpair = `${from}|${to}`
@@ -45,7 +45,7 @@ export const translateMyMemory = async (text: string, from: Locale, to: Locale):
   }
 }
 
-export interface MirrorPostParams {
+interface MirrorPostParams {
   sourceId: string
   content: string
   sourceLocale: Locale
@@ -59,7 +59,7 @@ export const mirrorPostTranslation = async (db: D1Database, params: MirrorPostPa
   if (!translated) return
 
   await db.prepare(
-    `INSERT INTO posts (id, content, locale, translation_of)
+    `INSERT OR IGNORE INTO posts (id, content, locale, translation_of)
      VALUES (lower(hex(randomblob(8))), ?, ?, ?)`
   )
     .bind(translated, targetLocale, params.sourceId)

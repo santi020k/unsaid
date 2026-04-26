@@ -1,4 +1,4 @@
-import { defineConfig } from 'astro/config'
+import { defineConfig, sessionDrivers } from 'astro/config'
 import robotsTxt from 'astro-robots-txt'
 
 import cloudflare from '@astrojs/cloudflare'
@@ -9,6 +9,11 @@ export default defineConfig({
   site: 'https://unsaid.santi020k.com',
   output: 'server',
   adapter: cloudflare(),
+  session: {
+    // Prevent the Cloudflare adapter from auto-provisioning a persistent SESSION KV binding.
+    // The app does not call Astro sessions, so no identity/session cookie is created.
+    driver: sessionDrivers.lruCache()
+  },
   integrations: [
     sitemap(),
     robotsTxt()
