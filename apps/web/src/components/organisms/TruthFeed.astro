@@ -50,19 +50,29 @@ const t = useTranslations(locale)
   let page = 1
   const feed = document.getElementById('truth-feed')
   const loadMoreBtn = document.getElementById('load-more')
-  const apiUrl = feed?.dataset.api ?? ''
+  const apiUrl = feed?.dataset.api?.trim() ?? ''
 
+  /** Posts array, or null if the request failed (network / offline). */
   async function fetchPosts(p) {
-    const res = await fetch(`${apiUrl}/api/posts?locale=${locale}&page=${p}`)
-    if (!res.ok) return []
-    const json = await res.json()
-    return json.data?.posts ?? []
+    if (!apiUrl) return null
+    try {
+      const res = await fetch(`${apiUrl}/api/posts?locale=${locale}&page=${p}`)
+      if (!res.ok) return []
+      const json = await res.json()
+      return json.data?.posts ?? []
+    } catch {
+      return null
+    }
   }
 
   loadMoreBtn?.addEventListener('click', async () => {
     page++
     loadMoreBtn.setAttribute('disabled', '')
     const posts = await fetchPosts(page)
+    if (posts === null) {
+      loadMoreBtn.removeAttribute('disabled')
+      return
+    }
     if (posts.length === 0) { loadMoreBtn.remove(); return }
 
     for (const post of posts) {
@@ -88,8 +98,9 @@ const t = useTranslations(locale)
   // Prepend new post on publish without full reload
   window.addEventListener('truth:published', async () => {
     const fresh = await fetchPosts(1)
+    if (fresh === null || !feed) return
     const latest = fresh[0]
-    if (!latest || !feed) return
+    if (!latest) return
 
     const date = new Date(latest.created_at).toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' })
     const article = document.createElement('article')

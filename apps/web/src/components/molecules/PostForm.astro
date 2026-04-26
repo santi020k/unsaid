@@ -127,8 +127,18 @@ const t = useTranslations(locale)
       if (charCount) charCount.textContent = String(maxLen)
       window.turnstile?.reset()
       window.dispatchEvent(new CustomEvent('truth:published'))
-    } catch {
-      showStatus('Something went wrong.', true)
+    } catch (err) {
+      const isNetwork =
+        err instanceof TypeError
+        && /failed to fetch|networkerror|load failed|internet disconnected/i.test(
+          String(err.message)
+        )
+      showStatus(
+        isNetwork ?
+          'Cannot reach the API. Turn off DevTools “Offline”, confirm the API is running (port 8787), and check PUBLIC_API_URL.' :
+          'Something went wrong.',
+        true
+      )
     } finally {
       submitBtn?.removeAttribute('disabled')
       submitBtn.textContent = 'Publish anonymously'
