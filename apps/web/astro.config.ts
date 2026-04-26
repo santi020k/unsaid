@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  site: 'https://unsaid.app',
+  site: 'https://unsaid.santi020k.com',
   output: 'server',
   adapter: cloudflare(),
   integrations: [

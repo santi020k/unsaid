@@ -52,6 +52,13 @@
   @apply text-xs font-semibold uppercase tracking-widest text-text-muted;
 }
 
+@utility footer-link {
+  @apply inline-flex items-center gap-2 text-sm text-text-muted;
+  @apply transition-colors duration-150 hover:text-accent;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent;
+  @apply motion-reduce:transition-none;
+}
+
 /* ── Decorative ──────────────────────────────────── */
 @utility accent-dot {
   @apply inline-block w-1.5 h-1.5 rounded-full bg-accent;

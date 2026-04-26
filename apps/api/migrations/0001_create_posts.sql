@@ -1,6 +1,4 @@
--- Run via: wrangler d1 execute unsaid-db --local --file=schema.sql
--- Prefer versioned migrations in ./migrations/ (see package.json db:migrate).
-
+-- Initial posts table for locale-scoped content
 CREATE TABLE IF NOT EXISTS posts (
   id          TEXT     PRIMARY KEY,
   content     TEXT     NOT NULL,

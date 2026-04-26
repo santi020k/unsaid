@@ -79,7 +79,7 @@ Copy the `id` and replace `REPLACE_WITH_YOUR_KV_ID` in `apps/api/wrangler.toml`.
 
 1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) → **Turnstile**
 2. Add a site → select "Managed" challenge type
-3. Add your domain (`unsaid.app`)
+3. Add your domain (`unsaid.santi020k.com`)
 4. Copy the **Site Key** (public) and **Secret Key** (private)
 
 The site key goes in Cloudflare Pages environment variables.
@@ -98,7 +98,7 @@ pnpm --filter @unsaid/api exec wrangler secret put TURNSTILE_SECRET_KEY
 
 # Allowed CORS origin (your Pages domain)
 pnpm --filter @unsaid/api exec wrangler secret put ALLOWED_ORIGIN
-# Enter: https://unsaid.app
+# Enter: https://unsaid.santi020k.com
 ```
 
 ---
@@ -117,7 +117,7 @@ https://unsaid-api.<your-subdomain>.workers.dev
 
 Keep this URL — you'll need it for the Pages environment variable.
 
-> To deploy with a custom domain (e.g., `api.unsaid.app`), go to:
+> To deploy with a custom domain (e.g., `api.unsaid.santi020k.com`), go to:
 > Workers & Pages → unsaid-api → Settings → Triggers → Add custom domain
 
 ---
@@ -164,15 +164,15 @@ pnpm --filter @unsaid/api exec wrangler pages deploy apps/web/dist --project-nam
 ### For Pages (frontend)
 
 1. Workers & Pages → unsaid → Custom domains → Set up a custom domain
-2. Enter `unsaid.app` and `www.unsaid.app`
+2. Enter `unsaid.santi020k.com` and `www.unsaid.santi020k.com`
 3. Cloudflare auto-provisions SSL
 
 ### For Workers (API)
 
 1. Workers & Pages → unsaid-api → Settings → Triggers → Add custom domain
-2. Enter `api.unsaid.app`
-3. Update `ALLOWED_ORIGIN` secret to `https://unsaid.app`
-4. Update `PUBLIC_API_URL` in Pages env to `https://api.unsaid.app`
+2. Enter `api.unsaid.santi020k.com`
+3. Update `ALLOWED_ORIGIN` secret to `https://unsaid.santi020k.com`
+4. Update `PUBLIC_API_URL` in Pages env to `https://api.unsaid.santi020k.com`
 
 ---
 

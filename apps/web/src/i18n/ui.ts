@@ -28,7 +28,10 @@ export const ui = {
     'about.title': 'What is Unsaid?',
     'about.body': 'A space for the uncomfortable, the obvious, the overlooked. Anonymous by design. No accounts. No tracking.',
 
-    'footer.made': 'Made to be honest.',
+    'footer.built_prefix': 'Built by',
+    'footer.author': 'Santiago Molina',
+    'footer.repo': 'GitHub',
+    'footer.repo_aria': 'View the Unsaid source code on GitHub',
     'footer.privacy': 'No data collected. No cookies. No bullshit.'
   },
   es: {
@@ -60,7 +63,10 @@ export const ui = {
     'about.title': '¿Qué es Unsaid?',
     'about.body': 'Un espacio para lo incómodo, lo obvio, lo ignorado. Anónimo por diseño. Sin cuentas. Sin rastreo.',
 
-    'footer.made': 'Hecho para ser honesto.',
+    'footer.built_prefix': 'Creado por',
+    'footer.author': 'Santiago Molina',
+    'footer.repo': 'GitHub',
+    'footer.repo_aria': 'Ver el código fuente de Unsaid en GitHub',
     'footer.privacy': 'Sin datos recopilados. Sin cookies. Sin mentiras.'
   }
 } as const

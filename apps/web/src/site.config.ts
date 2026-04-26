@@ -1,7 +1,9 @@
 export const SITE = {
   name: 'Unsaid',
-  url: 'https://unsaid.app',
+  url: 'https://unsaid.santi020k.com',
   description: 'The things everyone knows. The things nobody says.',
+  repositoryUrl: 'https://github.com/santi020k/unsaid',
+  authorUrl: 'https://santi020k.com',
   defaultLocale: 'en' as const,
   locales: ['en', 'es'] as const,
   apiUrl: (import.meta.env.PUBLIC_API_URL) ?? 'http://localhost:8787',
