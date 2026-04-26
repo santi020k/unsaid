@@ -47,11 +47,13 @@ test('English homepage has meta description', async ({ page }) => {
 test('Spanish homepage has meta description', async ({ page }) => {
   await page.goto('/es/')
 
-  const content = page.locator('meta[name="description"]')
+  const meta = page.locator('meta[name="description"]')
 
-  await expect(content).toHaveAttribute('content')
+  await expect(meta).toHaveAttribute('content')
 
-  expect(content.length).toBeGreaterThan(10)
+  const text = await meta.getAttribute('content')
+
+  expect(text!.length).toBeGreaterThan(10)
 })
 
 // ── Open Graph ───────────────────────────────────────────────────────────────

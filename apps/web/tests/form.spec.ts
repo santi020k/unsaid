@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 
 const MAX_LEN = 280
 const MIN_LEN = 10
+const belowMin = 'a'.repeat(MIN_LEN - 1)
 
 // ── Form structure ───────────────────────────────────────────────────────────
 
@@ -64,7 +65,7 @@ test('character count decrements as the user types', async ({ page }) => {
 test('submitting content shorter than minimum shows English error', async ({ page }) => {
   await page.goto('/')
 
-  await page.getByRole('textbox', { name: 'Say it.' }).fill('Short')
+  await page.getByRole('textbox', { name: 'Say it.' }).fill(belowMin)
 
   await page.getByRole('button', { name: 'Publish anonymously' }).click()
 
@@ -74,7 +75,7 @@ test('submitting content shorter than minimum shows English error', async ({ pag
 test('submitting content shorter than minimum shows Spanish error', async ({ page }) => {
   await page.goto('/es/')
 
-  await page.getByRole('textbox', { name: 'Dilo.' }).fill('Corto')
+  await page.getByRole('textbox', { name: 'Dilo.' }).fill(belowMin)
 
   await page.getByRole('button', { name: 'Publicar anónimamente' }).click()
 
