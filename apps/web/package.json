@@ -1,0 +1,28 @@
+{
+  "name": "@unsaid/web",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^13.2.1",
+    "@astrojs/sitemap": "^3.3.1",
+    "@tailwindcss/vite": "^4.1.5",
+    "@unsaid/shared": "workspace:^",
+    "astro": "^6.1.9",
+    "astro-robots-txt": "^1.0.0",
+    "tailwindcss": "^4.1.5"
+  },
+  "devDependencies": {
+    "@santi020k/eslint-config-astro": "^1.4.0",
+    "@santi020k/eslint-config-basic": "^1.4.0",
+    "typescript": "^6.0.3"
+  }
+}

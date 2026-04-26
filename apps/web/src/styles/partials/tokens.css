@@ -1,0 +1,32 @@
+@theme {
+  /* ── Palette ─────────────────────────────────────── */
+  --color-void:          #0b0b0b;
+  --color-surface:       #151515;
+  --color-surface-raised:#1a1a1a;
+  --color-border:        #1f1f1f;
+  --color-border-subtle: #181818;
+
+  --color-text-primary:  #f2ede6;
+  --color-text-muted:    #6b7380;
+  --color-text-faint:    #3a3e45;
+
+  --color-accent:        #e8e000;
+  --color-accent-dim:    #b3ae00;
+  --color-accent-glow:   rgba(232, 224, 0, 0.12);
+
+  --color-danger:        #ff4455;
+  --color-success:       #00e676;
+
+  /* ── Typography ──────────────────────────────────── */
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── Radii ───────────────────────────────────────── */
+  --radius-card: 0.5rem;
+  --radius-pill: 9999px;
+
+  /* ── Shadows ─────────────────────────────────────── */
+  --shadow-card:        0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-accent-glow: 0 0 24px var(--color-accent-glow);
+}

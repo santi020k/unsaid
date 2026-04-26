@@ -1,0 +1,58 @@
+/* ── Layout ──────────────────────────────────────── */
+@utility section-shell {
+  @apply mx-auto max-w-2xl px-4 py-16;
+}
+
+@utility section-shell-wide {
+  @apply mx-auto max-w-4xl px-4 py-16;
+}
+
+/* ── Buttons ─────────────────────────────────────── */
+@utility btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-pill px-5 py-2.5;
+  @apply text-sm font-semibold bg-accent text-void;
+  @apply hover:bg-accent-dim transition-colors duration-150;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent;
+  @apply motion-reduce:transition-none;
+}
+
+@utility btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-pill px-5 py-2.5;
+  @apply text-sm font-semibold border border-border text-text-muted;
+  @apply hover:border-accent/40 hover:text-text-primary transition-colors duration-150;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent;
+  @apply motion-reduce:transition-none;
+}
+
+/* ── Form ────────────────────────────────────────── */
+@utility field-surface {
+  @apply w-full bg-surface border border-border rounded-card px-4 py-3;
+  @apply text-text-primary placeholder:text-text-faint font-mono text-sm resize-none;
+  @apply focus:outline-none focus:border-accent/60 transition-colors duration-150;
+  @apply motion-reduce:transition-none;
+}
+
+/* ── Cards ───────────────────────────────────────── */
+@utility truth-card {
+  @apply bg-surface border border-border rounded-card p-6;
+  @apply transition-all duration-150 motion-reduce:transition-none;
+}
+
+@utility truth-card-interactive {
+  @apply truth-card cursor-default;
+  @apply hover:border-accent/25 hover:shadow-[0_0_20px_rgba(232,224,0,0.06)];
+}
+
+/* ── Typography ──────────────────────────────────── */
+@utility heading-display {
+  @apply font-display font-bold tracking-tight text-text-primary;
+}
+
+@utility text-label {
+  @apply text-xs font-semibold uppercase tracking-widest text-text-muted;
+}
+
+/* ── Decorative ──────────────────────────────────── */
+@utility accent-dot {
+  @apply inline-block w-1.5 h-1.5 rounded-full bg-accent;
+}

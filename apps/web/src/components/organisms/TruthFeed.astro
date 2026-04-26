@@ -1,0 +1,106 @@
+---
+import TruthCard from '@/components/atoms/TruthCard.astro'
+
+import { useTranslations } from '@/i18n/utils'
+import type { SupportedLocale } from '@/site.config'
+import { SITE } from '@/site.config'
+import type { Post } from '@unsaid/shared'
+
+interface Props {
+  initialPosts: Post[]
+  locale: SupportedLocale
+}
+
+const { initialPosts, locale } = Astro.props
+const t = useTranslations(locale)
+---
+
+<section aria-label={t('feed.title')}>
+  <div class="mb-8 flex items-center gap-3">
+    <span class="accent-dot"></span>
+    <h2 class="text-label">{t('feed.title')}</h2>
+  </div>
+
+  <div
+    id="truth-feed"
+    class="flex flex-col gap-4"
+    data-stagger
+    data-locale={locale}
+    data-api={SITE.apiUrl}
+  >
+    {
+      initialPosts.length === 0 ?
+        <p class="py-8 text-center text-sm text-text-muted">{t('feed.empty')}</p> :
+        initialPosts.map(post => <TruthCard post={post} />)
+    }
+  </div>
+
+  {
+    initialPosts.length >= 20 && (
+      <div class="mt-8 flex justify-center">
+        <button id="load-more" class="btn-ghost text-sm">
+          {t('feed.load_more')}
+        </button>
+      </div>
+    )
+  }
+</section>
+
+<script define:vars={{ locale, loadMoreLabel: t('feed.load_more') }}>
+  let page = 1
+  const feed = document.getElementById('truth-feed')
+  const loadMoreBtn = document.getElementById('load-more')
+  const apiUrl = feed?.dataset.api ?? ''
+
+  async function fetchPosts(p) {
+    const res = await fetch(`${apiUrl}/api/posts?locale=${locale}&page=${p}`)
+    if (!res.ok) return []
+    const json = await res.json()
+    return json.data?.posts ?? []
+  }
+
+  loadMoreBtn?.addEventListener('click', async () => {
+    page++
+    loadMoreBtn.setAttribute('disabled', '')
+    const posts = await fetchPosts(page)
+    if (posts.length === 0) { loadMoreBtn.remove(); return }
+
+    for (const post of posts) {
+      const date = new Date(post.created_at).toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' })
+      const article = document.createElement('article')
+      article.className = 'truth-card-interactive'
+      article.dataset.animate = ''
+      article.innerHTML = `
+        <p class="font-mono text-sm leading-relaxed text-text-primary">${post.content}</p>
+        <footer class="mt-4 flex items-center gap-3">
+          <span class="accent-dot"></span>
+          <time class="text-xs text-text-faint" datetime="${post.created_at}">${date}</time>
+        </footer>
+      `
+      feed?.appendChild(article)
+      requestAnimationFrame(() => article.classList.add('is-visible'))
+    }
+
+    loadMoreBtn.removeAttribute('disabled')
+    if (posts.length < 20) loadMoreBtn.remove()
+  })
+
+  // Prepend new post on publish without full reload
+  window.addEventListener('truth:published', async () => {
+    const fresh = await fetchPosts(1)
+    const latest = fresh[0]
+    if (!latest || !feed) return
+
+    const date = new Date(latest.created_at).toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' })
+    const article = document.createElement('article')
+    article.className = 'truth-card-interactive animate-accent-pulse'
+    article.innerHTML = `
+      <p class="font-mono text-sm leading-relaxed text-text-primary">${latest.content}</p>
+      <footer class="mt-4 flex items-center gap-3">
+        <span class="accent-dot"></span>
+        <time class="text-xs text-text-faint" datetime="${latest.created_at}">${date}</time>
+      </footer>
+    `
+    feed.insertBefore(article, feed.firstChild)
+  })
+</script>

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Enforce Conventional Commits + max 200 chars
+msg=$(cat "$1")
+pattern='^(feat|fix|chore|docs|style|refactor|perf|test|ci|build|revert)(\(.+\))?: .{1,150}$'
+if ! echo "$msg" | grep -qE "$pattern"; then
+  echo "❌ Invalid commit message format."
+  echo "   Use: type(scope): description  (max ~150 chars)"
+  echo "   Types: feat | fix | chore | docs | style | refactor | perf | test | ci | build | revert"
+  exit 1
+fi

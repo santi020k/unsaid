@@ -1,0 +1,24 @@
+name = "unsaid-api"
+main = "src/index.ts"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "unsaid-db"
+database_id = "REPLACE_WITH_YOUR_D1_ID"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "REPLACE_WITH_YOUR_KV_ID"
+
+[vars]
+ALLOWED_ORIGIN = "http://localhost:4321"
+
+# Production vars are set via Cloudflare dashboard (not committed):
+# TURNSTILE_SECRET_KEY = "..."
+# ALLOWED_ORIGIN = "https://unsaid.app"
+
+[dev]
+port = 8787
+local_protocol = "http"

@@ -1,0 +1,50 @@
+---
+import PostForm from '@/components/molecules/PostForm.astro'
+import TruthFeed from '@/components/organisms/TruthFeed.astro'
+
+import { useTranslations } from '@/i18n/utils'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { SITE } from '@/site.config'
+import type { Post } from '@unsaid/shared'
+
+const locale = 'es'
+const t = useTranslations(locale)
+let initialPosts: Post[] = []
+
+try {
+  const res = await fetch(`${SITE.apiUrl}/api/posts?locale=${locale}`)
+
+  if (res.ok) {
+    const json = await res.json<{ data: { posts: Post[] } }>()
+
+    initialPosts = json.data.posts
+  }
+} catch {
+  // Feed loads client-side if SSR fetch fails
+}
+---
+
+<BaseLayout locale={locale}>
+  <section class="section-shell pt-24 pb-16 text-center">
+    <p class="mb-6 animate-fade-in text-label">{t('hero.eyebrow')}</p>
+    <h1 class="
+      mb-6 animate-slide-up heading-display text-5xl leading-none
+      whitespace-pre-line
+      sm:text-6xl
+    "
+    >
+      {t('hero.headline')}
+    </h1>
+    <p class="animate-slide-up text-lg text-text-muted" style="animation-delay: 80ms">
+      {t('hero.sub')}
+    </p>
+  </section>
+
+  <div class="section-shell pt-0">
+    <PostForm locale={locale} />
+  </div>
+
+  <div class="section-shell pt-8">
+    <TruthFeed initialPosts={initialPosts} locale={locale} />
+  </div>
+</BaseLayout>

@@ -1,0 +1,47 @@
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes accent-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--color-accent-glow); }
+  50%       { box-shadow: 0 0 20px 4px var(--color-accent-glow); }
+}
+
+@theme {
+  --animate-fade-in:     fade-in 0.4s ease-out both;
+  --animate-slide-up:    slide-up 0.5s ease-out both;
+  --animate-accent-pulse: accent-pulse 1.6s ease-in-out;
+}
+
+/* Scroll-triggered reveal — mirrors private-website pattern */
+@media (prefers-reduced-motion: no-preference) {
+  [data-animate] {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.45s ease-out, transform 0.45s ease-out;
+  }
+
+  [data-animate].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-stagger] > * {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+
+  [data-stagger].is-visible > *:nth-child(1)  { transition-delay:  0ms; opacity: 1; transform: none; }
+  [data-stagger].is-visible > *:nth-child(2)  { transition-delay: 60ms; opacity: 1; transform: none; }
+  [data-stagger].is-visible > *:nth-child(3)  { transition-delay:120ms; opacity: 1; transform: none; }
+  [data-stagger].is-visible > *:nth-child(4)  { transition-delay:180ms; opacity: 1; transform: none; }
+  [data-stagger].is-visible > *:nth-child(5)  { transition-delay:240ms; opacity: 1; transform: none; }
+  [data-stagger].is-visible > *:nth-child(6)  { transition-delay:300ms; opacity: 1; transform: none; }
+}

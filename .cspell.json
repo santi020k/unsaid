@@ -1,0 +1,6 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": ["unsaid", "turbo", "astro", "hono", "wrangler", "pnpm", "cloudflare", "turnstile", "captcha", "santi020k", "monorepo", "workerd", "unrs", "napi"],
+  "ignorePaths": ["node_modules", "dist", ".astro", ".wrangler", "*.lock"]
+}
