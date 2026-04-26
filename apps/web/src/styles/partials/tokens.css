@@ -7,8 +7,10 @@
   --color-border-subtle: #181818;
 
   --color-text-primary:  #f2ede6;
-  --color-text-muted:    #6b7380;
-  --color-text-faint:    #3a3e45;
+  /* WCAG 2 AA ≥4.5:1 on void (#0b0b0b) for body-scale copy and placeholders */
+  --color-text-muted:    #7d8593;
+  /* Slightly dimmer than muted but ≥4.5:1 on void and on surface (#151515) for placeholders / counters */
+  --color-text-faint:    #777f8c;
 
   --color-accent:        #e8e000;
   --color-accent-dim:    #b3ae00;

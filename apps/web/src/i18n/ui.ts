@@ -2,6 +2,8 @@ export const ui = {
   en: {
     'nav.home': 'Home',
     'nav.about': 'About',
+    'nav.skip_to_content': 'Skip to main content',
+    'nav.main': 'Site',
     'nav.lang': 'Español',
 
     'hero.eyebrow': 'Anonymous. Always.',
@@ -37,6 +39,8 @@ export const ui = {
   es: {
     'nav.home': 'Inicio',
     'nav.about': 'Acerca de',
+    'nav.skip_to_content': 'Saltar al contenido principal',
+    'nav.main': 'Sitio',
     'nav.lang': 'English',
 
     'hero.eyebrow': 'Anónimo. Siempre.',

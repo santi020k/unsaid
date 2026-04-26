@@ -1,7 +1,14 @@
 import astroConfig from '@santi020k/eslint-config-astro'
-import { eslintConfig } from '@santi020k/eslint-config-basic'
+import { eslintConfig, playwright } from '@santi020k/eslint-config-basic'
 
 export default [
+  {
+    name: 'web/ignores-playwright-artifacts',
+    ignores: [
+      'playwright-report/**',
+      'test-results/**'
+    ]
+  },
   ...eslintConfig({
     typescript: true,
     frameworks: { astro: astroConfig }
@@ -28,5 +35,10 @@ export default [
   {
     name: 'web/ignores',
     ignores: ['.astro/**', 'dist/**', 'node_modules/**']
-  }
+  },
+  ...playwright.map(config => ({
+    ...config,
+    name: `web/${config.name ?? 'playwright-tests'}`,
+    files: ['tests/**/*.ts']
+  }))
 ]

@@ -1,5 +1,9 @@
-import { AxeBuilder } from '@axe-core/playwright'
+import { expectNoUnexpectedAccessibilityViolations } from './helpers/accessibility'
+
+import type { AxeBuilder } from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+
+const axeForPage = (builder: AxeBuilder) => builder.exclude('.cf-turnstile')
 
 test('English homepage renders hero and form', async ({ page }) => {
   await page.goto('/')
@@ -45,22 +49,30 @@ test('language switcher navigates from Spanish to English', async ({ page }) => 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('The things everyone knows')
 })
 
-test('English homepage has no accessibility violations', async ({ page }) => {
+test('homepage exposes skip link to main content', async ({ page }) => {
   await page.goto('/')
 
-  const results = await new AxeBuilder({ page })
-    .exclude('.cf-turnstile') // third-party widget — audited by Cloudflare
-    .analyze()
-
-  expect(results.violations).toEqual([])
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute('href', '#main-content')
 })
 
-test('Spanish homepage has no accessibility violations', async ({ page }) => {
+test('Spanish homepage exposes skip link to main content', async ({ page }) => {
   await page.goto('/es/')
 
-  const results = await new AxeBuilder({ page })
-    .exclude('.cf-turnstile')
-    .analyze()
+  await expect(page.getByRole('link', { name: 'Saltar al contenido principal' })).toHaveAttribute('href', '#main-content')
+})
 
-  expect(results.violations).toEqual([])
+test('English homepage has no unexpected accessibility violations', async ({ page }) => {
+  await page.goto('/')
+
+  await expect(page.locator('#main-content')).toBeVisible()
+
+  await expectNoUnexpectedAccessibilityViolations(page, [], axeForPage)
+})
+
+test('Spanish homepage has no unexpected accessibility violations', async ({ page }) => {
+  await page.goto('/es/')
+
+  await expect(page.locator('#main-content')).toBeVisible()
+
+  await expectNoUnexpectedAccessibilityViolations(page, [], axeForPage)
 })
