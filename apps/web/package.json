@@ -1,7 +1,7 @@
 {
   "name": "@unsaid/web",
   "version": "1.0.0",
-  "description": "Unsaid marketing and app frontend (Astro 6, Cloudflare Pages).",
+  "description": "Unsaid marketing and app frontend (Astro 6, Cloudflare Worker + assets).",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -16,7 +16,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "deploy": "wrangler deploy --config dist/server/wrangler.json",
+    "deploy": "wrangler deploy",
     "preview": "astro preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

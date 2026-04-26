@@ -1,4 +1,0 @@
-# Worker identity for Cloudflare (Astro + @astrojs/cloudflare v13+ deploys as a Worker, not Pages static).
-# Build still emits dist/server/wrangler.json; this file is merged during dev/build.
-name = "unsaid"
-compatibility_date = "2026-04-15"

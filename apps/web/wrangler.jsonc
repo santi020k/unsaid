@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Wrangler at the app root so Cloudflare Pages Git (and Workers Builds) detect SSR + static assets.
+  // Omit "main" pointing at dist/... — that file is not present until after `astro build` and Vite fails
+  // during the build. The adapter emits dist/server/wrangler.json; `wrangler deploy` merges it and uses
+  // dist/server/entry.mjs with assets under dist/client/.
+  //
+  // Docs sometimes show main `./dist/_worker.js/index.js` and assets `./dist`; @astrojs/cloudflare v13
+  // uses dist/server and dist/client instead, so assets.directory is ./dist/client here.
+  "name": "unsaid",
+  "compatibility_date": "2026-04-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist/client"
+  },
+  "images": {
+    "binding": "IMAGES"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
