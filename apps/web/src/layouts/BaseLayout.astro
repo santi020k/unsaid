@@ -35,6 +35,14 @@ const websiteJsonLd = {
   description: SITE.description,
   inLanguage: ['en', 'es']
 }
+
+const legalPath = (slug: string) => (locale === 'en' ? `/${slug}` : `/es/${slug}`)
+
+/** In-app routes shown in the legal row; middots render between items. */
+const footerLegalLinks = [
+  { href: legalPath('privacy'), label: t('footer.legal_privacy') },
+  { href: legalPath('terms'), label: t('footer.legal_terms') }
+] as const
 ---
 
 <!doctype html>
@@ -135,56 +143,75 @@ const websiteJsonLd = {
       <slot />
     </main>
 
-    <footer class="mt-24 border-t border-border">
+    <footer class="mt-24 border-t border-border bg-surface/35">
       <div
         class="
-          mx-auto flex max-w-2xl flex-col gap-4 px-4 py-10
-          sm:flex-row sm:items-center sm:justify-between
+          mx-auto max-w-2xl px-4 py-12
+          sm:py-14
         "
         data-animate
       >
-        <div class="flex flex-col gap-2">
-          <p class="text-sm text-text-muted">
-            {t('footer.built_prefix')}
+        <div class="flex min-w-0 flex-col gap-4">
+          <div class="space-y-1.5">
+            <p class="text-sm/relaxed text-text-muted">
+              {t('footer.built_prefix')}
+              <a
+                href={SITE.authorUrl}
+                class="footer-link-legal ml-1 font-medium"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('footer.author')}
+              </a>
+            </p>
+            <p class="max-w-md text-xs/relaxed text-text-faint">
+              {t('footer.privacy')}
+            </p>
+          </div>
+
+          <div
+            class="
+              flex flex-col gap-4 border-t border-border/80 pt-4
+              sm:flex-row sm:items-center sm:justify-between sm:gap-6
+              sm:border-t-0 sm:pt-0
+            "
+          >
+            <nav aria-label={t('footer.legal_nav_aria')}>
+              <ul
+                class="
+                  m-0 flex list-none flex-wrap items-center gap-y-2 p-0 text-xs
+                  font-medium
+                "
+              >
+                {footerLegalLinks.map(item => (
+                  <li
+                    class="
+                      inline-flex items-center
+                      not-first:before:mx-2.5 not-first:before:inline-block
+                      not-first:before:text-text-faint
+                      not-first:before:content-['·']
+                    "
+                  >
+                    <a href={item.href} class="footer-link-legal">
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
             <a
-              href={SITE.authorUrl}
-              class="ml-1 footer-link"
+              href={SITE.repositoryUrl}
+              class="footer-link-github w-fit"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={t('footer.repo_aria')}
             >
-              {t('footer.author')}
+              <TablerIcon class="size-4.5 shrink-0 text-current" name="brand-github" />
+              <span>{t('footer.repo')}</span>
             </a>
-          </p>
-          <p class="text-xs text-text-faint">{t('footer.privacy')}</p>
-          <nav
-            aria-label={t('footer.legal_nav_aria')}
-            class="flex flex-wrap gap-x-3 gap-y-1 text-xs"
-          >
-            <a
-              href={locale === 'en' ? '/privacy' : '/es/privacy'}
-              class="footer-link"
-            >
-              {t('footer.legal_privacy')}
-            </a>
-            <a
-              href={locale === 'en' ? '/terms' : '/es/terms'}
-              class="footer-link"
-            >
-              {t('footer.legal_terms')}
-            </a>
-          </nav>
+          </div>
         </div>
-
-        <a
-          href={SITE.repositoryUrl}
-          class="footer-link gap-2.5"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={t('footer.repo_aria')}
-        >
-          <TablerIcon class="size-5 shrink-0 text-current" name="brand-github" />
-          <span>{t('footer.repo')}</span>
-        </a>
       </div>
     </footer>
 
