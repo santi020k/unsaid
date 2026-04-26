@@ -35,3 +35,6 @@ export interface PostsResponse {
 export const POST_MAX_LENGTH = 280
 export const POST_MIN_LENGTH = 10
 export const DAILY_LIMIT = 3
+
+/** Posts per page for the home feed (SSR + client). Kept in sync with API max page size. */
+export const FEED_PAGE_SIZE = 12

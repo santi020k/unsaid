@@ -1,7 +1,12 @@
-import { eslintConfig } from '@santi020k/eslint-config-basic'
+import { eslintConfig, Runtime } from '@santi020k/eslint-config-basic'
+import hono from '@santi020k/eslint-config-hono'
 
 export default [
-  ...eslintConfig({ typescript: true }),
+  ...eslintConfig({
+    typescript: true,
+    runtime: Runtime.Worker,
+    frameworks: { hono }
+  }),
   {
     name: 'api/ignores',
     ignores: ['dist/**', 'node_modules/**', '.wrangler/**']

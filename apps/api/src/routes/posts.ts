@@ -26,10 +26,19 @@ const createPostSchema = z.object({
   captchaToken: z.string().min(1)
 })
 
+const clampFeedLimit = (raw: string | undefined): number => {
+  const n = parseInt(raw ?? '20', 10)
+
+  if (!Number.isFinite(n) || n < 1) return 20
+
+  return Math.min(50, n)
+}
+
 posts.get('/', async c => {
   const locale = c.req.query('locale')
-  const page = parseInt(c.req.query('page') ?? '1', 10)
-  const limit = 20
+  const pageRaw = c.req.query('page') ?? '1'
+  const page = Math.max(1, parseInt(pageRaw, 10) || 1)
+  const limit = clampFeedLimit(c.req.query('limit'))
   const offset = (page - 1) * limit
 
   const query = locale ?

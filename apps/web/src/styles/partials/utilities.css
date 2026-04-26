@@ -45,6 +45,19 @@
   @apply hover:border-accent/25 hover:shadow-[0_0_20px_rgba(232,224,0,0.06)];
 }
 
+@utility form-publish-success {
+  animation: var(--animate-form-success, none);
+}
+
+@utility truth-optimistic-pending {
+  @apply border-dashed border-accent/30;
+  animation: var(--animate-optimistic-pulse, none);
+}
+
+@utility truth-published-celebrate {
+  animation: var(--animate-published-celebrate, var(--animate-accent-pulse, none));
+}
+
 @utility truth-post-badge {
   @apply inline-flex items-center gap-1.5 rounded-pill border border-border px-2 py-0.5;
   @apply text-xs font-medium text-text-muted;

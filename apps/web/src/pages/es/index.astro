@@ -5,22 +5,27 @@ import TruthFeed from '@/components/organisms/TruthFeed.astro'
 import { useTranslations } from '@/i18n/utils'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import { SITE } from '@/site.config'
-import type { Post } from '@unsaid/shared'
+import { FEED_PAGE_SIZE, type Post } from '@unsaid/shared'
 
 const locale = 'es'
 const t = useTranslations(locale)
 let initialPosts: Post[] = []
+let initialHasMore = false
 
 try {
-  const res = await fetch(`${SITE.apiUrl}/api/posts?locale=${locale}`)
+  const res = await fetch(
+    `${SITE.apiUrl}/api/posts?locale=${locale}&page=1&limit=${String(FEED_PAGE_SIZE)}`
+  )
 
   if (res.ok) {
-    const json = (await res.json()) as { data: { posts: Post[] } }
+    const json = (await res.json()) as { data: { posts: Post[], total: number } }
 
     initialPosts = json.data.posts
+
+    initialHasMore = json.data.total > json.data.posts.length
   }
 } catch {
-  // Feed loads client-side if SSR fetch fails
+  // Feed is empty; client-side publish still works
 }
 ---
 
@@ -60,6 +65,10 @@ try {
   </div>
 
   <div class="section-shell pt-8">
-    <TruthFeed initialPosts={initialPosts} locale={locale} />
+    <TruthFeed
+      initialHasMore={initialHasMore}
+      initialPosts={initialPosts}
+      locale={locale}
+    />
   </div>
 </BaseLayout>

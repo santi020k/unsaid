@@ -14,6 +14,7 @@ export const ui = {
     'feed.title': 'Recent truths',
     'feed.empty': 'No truths yet. Be the first.',
     'feed.load_more': 'Load more',
+    'feed.loading': 'Loading more…',
     'feed.badge_auto_translation': 'Automated translation',
     'feed.badge_auto_translation_title':
       'This text was automatically translated from a post written in another language.',
@@ -67,6 +68,7 @@ export const ui = {
     'feed.title': 'Verdades recientes',
     'feed.empty': 'Sin verdades aún. Sé el primero.',
     'feed.load_more': 'Cargar más',
+    'feed.loading': 'Cargando más…',
     'feed.badge_auto_translation': 'Traducción automática',
     'feed.badge_auto_translation_title':
       'Este texto se tradujo automáticamente desde una publicación escrita en otro idioma.',

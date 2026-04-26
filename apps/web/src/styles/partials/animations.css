@@ -18,11 +18,31 @@
   50%       { box-shadow: 0 0 20px 4px var(--color-accent-glow); }
 }
 
+@keyframes form-success-glow {
+  0% { box-shadow: 0 0 0 0 var(--color-accent-glow); }
+  50% { box-shadow: 0 0 28px 4px rgba(0, 230, 118, 0.18); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@keyframes published-celebrate {
+  0% { box-shadow: 0 0 0 0 var(--color-accent-glow); }
+  35% { box-shadow: 0 0 32px 8px var(--color-accent-glow); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@keyframes optimistic-pulse {
+  0%, 100% { opacity: 0.92; }
+  50% { opacity: 1; }
+}
+
 @theme {
   --animate-fade-in:       fade-in 0.4s ease-out both;
   --animate-slide-up:      slide-up 0.5s ease-out both;
   --animate-header-enter:  header-enter 0.45s ease-out both;
   --animate-accent-pulse:  accent-pulse 1.6s ease-in-out;
+  --animate-form-success:  form-success-glow 0.85s ease-out both;
+  --animate-published-celebrate: published-celebrate 1.4s ease-out;
+  --animate-optimistic-pulse:   optimistic-pulse 1.6s ease-in-out infinite;
 }
 
 /* Scroll-triggered reveal */
@@ -79,5 +99,14 @@
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .form-publish-success {
+    animation: none;
+  }
+
+  .truth-optimistic-pending,
+  .truth-published-celebrate {
+    animation: none;
   }
 }
