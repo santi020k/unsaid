@@ -17,6 +17,7 @@
       "inputs": ["**/*.{ts,tsx,js,astro,json}"]
     },
     "test": {
+      "dependsOn": ["^build"],
       "outputs": ["playwright-report/**"]
     },
     "deploy": {

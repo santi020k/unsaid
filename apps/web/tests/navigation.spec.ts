@@ -53,7 +53,7 @@ test('language switcher on privacy page preserves the legal section', async ({ p
 test('logo link returns to English home from a legal page', async ({ page }) => {
   await page.goto('/privacy')
 
-  await page.getByRole('link', { name: 'Unsaid' }).click()
+  await page.getByRole('navigation', { name: 'Site' }).getByRole('link', { name: 'Unsaid', exact: true }).click()
 
   await expect(page).toHaveURL('/')
 })
@@ -61,7 +61,7 @@ test('logo link returns to English home from a legal page', async ({ page }) => 
 test('logo link stays at Spanish home when on Spanish page', async ({ page }) => {
   await page.goto('/es/')
 
-  await page.getByRole('link', { name: 'Unsaid' }).click()
+  await page.getByRole('navigation', { name: 'Sitio' }).getByRole('link', { name: 'Unsaid', exact: true }).click()
 
   await expect(page).toHaveURL('/es/')
 })
