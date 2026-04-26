@@ -12,6 +12,7 @@ interface Props {
 
 const { locale } = Astro.props
 const t = useTranslations(locale)
+const charCountTemplate = t('form.chars_left', { n: '__N__' })
 ---
 
 <section class="truth-card" aria-label={t('form.title')}>
@@ -39,7 +40,7 @@ const t = useTranslations(locale)
         aria-live="polite"
         class="absolute right-3 bottom-3 text-xs text-text-faint tabular-nums"
       >
-        {POST_MAX_LENGTH}
+        {t('form.chars_left', { n: POST_MAX_LENGTH })}
       </span>
     </div>
 
@@ -77,7 +78,25 @@ const t = useTranslations(locale)
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline></script>
 
-<script is:inline define:vars={{ locale, maxLen: POST_MAX_LENGTH, minLen: POST_MIN_LENGTH, apiUrl: SITE.apiUrl }}>
+<script
+  is:inline
+  define:vars={{
+    locale,
+    maxLen: POST_MAX_LENGTH,
+    minLen: POST_MIN_LENGTH,
+    apiUrl: SITE.apiUrl,
+    charCountTemplate,
+    msgSubmitting: t('form.submitting'),
+    msgSubmit: t('form.submit'),
+    msgSuccess: t('form.success'),
+    errShort: t('form.error.too_short'),
+    errLong: t('form.error.too_long'),
+    errCaptcha: t('form.error.captcha_required'),
+    errLimit: t('form.error.limit'),
+    errGeneric: t('form.error.generic'),
+    errNetwork: t('form.error.network')
+  }}
+>
   const form = document.getElementById('post-form')
   const textarea = document.getElementById('post-content')
   /** Astro/ESLint-friendly multiline textarea leaves whitespace-only body; strip so caret starts at line 1. */
@@ -86,9 +105,13 @@ const t = useTranslations(locale)
   const statusEl = document.getElementById('form-status')
   const submitBtn = document.getElementById('submit-btn')
 
+  function setCharCountRemaining(remaining) {
+    if (!charCount) return
+    charCount.textContent = charCountTemplate.replace('__N__', String(remaining))
+  }
+
   textarea?.addEventListener('input', () => {
-    const remaining = maxLen - textarea.value.length
-    if (charCount) charCount.textContent = String(remaining)
+    setCharCountRemaining(maxLen - textarea.value.length)
   })
 
   function showStatus(msg, isError = false) {
@@ -102,14 +125,14 @@ const t = useTranslations(locale)
     e.preventDefault()
 
     const content = textarea?.value.trim() ?? ''
-    if (content.length < minLen) { showStatus('Too short.', true); return }
-    if (content.length > maxLen) { showStatus('Too long.', true); return }
+    if (content.length < minLen) { showStatus(errShort, true); return }
+    if (content.length > maxLen) { showStatus(errLong, true); return }
 
     const token = document.querySelector('[name="cf-turnstile-response"]')?.value
-    if (!token) { showStatus('Please complete the CAPTCHA.', true); return }
+    if (!token) { showStatus(errCaptcha, true); return }
 
     submitBtn?.setAttribute('disabled', '')
-    submitBtn.textContent = 'Publishing…'
+    if (submitBtn) submitBtn.textContent = msgSubmitting
 
     try {
       const res = await fetch(`${apiUrl}/api/posts`, {
@@ -118,13 +141,13 @@ const t = useTranslations(locale)
         body: JSON.stringify({ content, locale, captchaToken: token }),
       })
 
-      if (res.status === 429) { showStatus('Daily limit reached. Come back tomorrow.', true); return }
-      if (!res.ok) { showStatus('Something went wrong.', true); return }
+      if (res.status === 429) { showStatus(errLimit, true); return }
+      if (!res.ok) { showStatus(errGeneric, true); return }
 
-      showStatus('Truth published.')
+      showStatus(msgSuccess, false)
       form.reset()
       if (textarea) textarea.value = textarea.value.trimStart()
-      if (charCount) charCount.textContent = String(maxLen)
+      setCharCountRemaining(maxLen)
       window.turnstile?.reset()
       window.dispatchEvent(new CustomEvent('truth:published'))
     } catch (err) {
@@ -134,14 +157,12 @@ const t = useTranslations(locale)
           String(err.message)
         )
       showStatus(
-        isNetwork ?
-          'Cannot reach the API. Turn off DevTools “Offline”, confirm the API is running (port 8787), and check PUBLIC_API_URL.' :
-          'Something went wrong.',
+        isNetwork ? errNetwork : errGeneric,
         true
       )
     } finally {
       submitBtn?.removeAttribute('disabled')
-      submitBtn.textContent = 'Publish anonymously'
+      if (submitBtn) submitBtn.textContent = msgSubmit
     }
   })
 </script>

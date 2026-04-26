@@ -27,6 +27,9 @@ export const ui = {
     'form.error.generic': 'Something went wrong. Try again.',
     'form.error.limit': 'Daily limit reached. Come back tomorrow.',
     'form.error.captcha': 'CAPTCHA failed. Please try again.',
+    'form.error.captcha_required': 'Please complete the CAPTCHA before publishing.',
+    'form.error.network':
+      'Cannot reach the API. If you are developing locally, confirm the API is running (port 8787) and PUBLIC_API_URL is set.',
     'form.error.too_short': 'Too short. Say a bit more.',
     'form.error.too_long': 'Too long. Keep it tight.',
 
@@ -67,6 +70,9 @@ export const ui = {
     'form.error.generic': 'Algo salió mal. Intenta de nuevo.',
     'form.error.limit': 'Límite diario alcanzado. Vuelve mañana.',
     'form.error.captcha': 'CAPTCHA fallido. Intenta de nuevo.',
+    'form.error.captcha_required': 'Completa el CAPTCHA antes de publicar.',
+    'form.error.network':
+      'No se puede conectar a la API. En desarrollo local, confirma que la API está en marcha (puerto 8787) y que PUBLIC_API_URL es correcta.',
     'form.error.too_short': 'Muy corto. Di un poco más.',
     'form.error.too_long': 'Muy largo. Sé más conciso.',
 

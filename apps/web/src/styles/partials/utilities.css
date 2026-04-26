@@ -11,7 +11,8 @@
 @utility btn-primary {
   @apply inline-flex items-center justify-center gap-2 rounded-pill px-5 py-2.5;
   @apply text-sm font-semibold bg-accent text-void;
-  @apply hover:bg-accent-dim transition-colors duration-150;
+  @apply hover:bg-accent-dim transition-[color,transform] duration-150;
+  @apply active:scale-[0.98] motion-reduce:active:scale-100;
   @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent;
   @apply motion-reduce:transition-none;
 }
@@ -19,7 +20,8 @@
 @utility btn-ghost {
   @apply inline-flex items-center justify-center gap-2 rounded-pill px-5 py-2.5;
   @apply text-sm font-semibold border border-border text-text-muted;
-  @apply hover:border-accent/40 hover:text-text-primary transition-colors duration-150;
+  @apply hover:border-accent/40 hover:text-text-primary transition-[color,transform,border-color] duration-150;
+  @apply active:scale-[0.98] motion-reduce:active:scale-100;
   @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent;
   @apply motion-reduce:transition-none;
 }
