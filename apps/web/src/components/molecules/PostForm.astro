@@ -43,12 +43,14 @@ const t = useTranslations(locale)
     </div>
 
     <!-- Cloudflare Turnstile -->
-    <div
-      class="cf-turnstile mt-4"
-      data-sitekey={SITE.turnstileSiteKey}
-      data-theme="dark"
-      data-size="flexible"
-    >
+    <div class="mt-4 overflow-hidden rounded-card border border-border">
+      <div
+        class="cf-turnstile"
+        data-sitekey={SITE.turnstileSiteKey}
+        data-theme="dark"
+        data-size="flexible"
+      >
+      </div>
     </div>
 
     <div class="mt-4 flex items-center justify-between gap-4">
