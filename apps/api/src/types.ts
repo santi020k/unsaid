@@ -2,7 +2,8 @@ export interface Bindings {
   DB: D1Database
   RATE_LIMIT: KVNamespace
   TURNSTILE_SECRET_KEY: string
-  ALLOWED_ORIGIN: string
+  ALLOWED_ORIGIN?: string
+  ALLOWED_ORIGINS?: string
   ENABLE_AUTO_TRANSLATION?: string
   TURNSTILE_ALLOWED_HOSTNAMES?: string
 

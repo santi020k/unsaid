@@ -15,15 +15,13 @@ id = "REPLACE_WITH_YOUR_KV_ID"
 preview_id = "REPLACE_WITH_YOUR_PREVIEW_KV_ID"
 
 [vars]
-ALLOWED_ORIGIN = "http://localhost:4321"
+ALLOWED_ORIGINS = "https://unsaid.santi020k.com,https://www.unsaid.santi020k.com"
 ENABLE_AUTO_TRANSLATION = "false"
-TURNSTILE_ALLOWED_HOSTNAMES = ""
+TURNSTILE_ALLOWED_HOSTNAMES = "unsaid.santi020k.com,www.unsaid.santi020k.com"
 
-# Production vars are set via Cloudflare dashboard (not committed):
+# Local development values are loaded from apps/api/.dev.vars.
+# Production secret is set once in Cloudflare and preserved by wrangler deploy:
 # TURNSTILE_SECRET_KEY = "..."
-# ALLOWED_ORIGIN = "https://unsaid.santi020k.com"
-# ENABLE_AUTO_TRANSLATION = "true"
-# TURNSTILE_ALLOWED_HOSTNAMES = "unsaid.santi020k.com,www.unsaid.santi020k.com"
 
 [dev]
 port = 8787

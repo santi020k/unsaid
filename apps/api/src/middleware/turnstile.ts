@@ -4,6 +4,7 @@ import type { Bindings } from '../types.js'
 
 const VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 const VERIFY_TIMEOUT_MS = 8_000
+const TURNSTILE_TEST_SECRET_KEY = '1x0000000000000000000000000000000AA'
 
 interface TurnstileResult {
   success?: boolean
@@ -70,7 +71,8 @@ export const validateTurnstile = createMiddleware<{ Bindings: Bindings }>(async 
     return c.json({ error: 'CAPTCHA validation failed.' }, 403)
   }
 
-  if (!hasAllowedHostname(result, c.env.TURNSTILE_ALLOWED_HOSTNAMES)) {
+  if (c.env.TURNSTILE_SECRET_KEY !== TURNSTILE_TEST_SECRET_KEY &&
+    !hasAllowedHostname(result, c.env.TURNSTILE_ALLOWED_HOSTNAMES)) {
     return c.json({ error: 'CAPTCHA validation failed.' }, 403)
   }
 

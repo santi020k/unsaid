@@ -12,6 +12,7 @@
     "lint": "turbo run lint",
     "check": "turbo run check",
     "test": "turbo run test",
+    "deploy:api": "pnpm --filter @unsaid/api run deploy",
     "spellcheck": "cspell '**/*.{md,json}' --no-progress --exclude '**/node_modules/**' --exclude '**/dist/**'",
     "knip": "knip",
     "pre-commit": "lint-staged --quiet",

@@ -2,6 +2,12 @@
 
 This guide covers deploying Unsaid to Cloudflare from scratch. It assumes you have a Cloudflare account and the repo cloned locally.
 
+Ongoing production deploys should be automated:
+
+- Cloudflare Pages deploys `apps/web` on push to `main` through the Pages Git integration.
+- GitHub Actions applies D1 migrations and deploys `apps/api` after CI passes on `main`.
+- Manual steps below are only for first-time Cloudflare resources, secrets, and domains.
+
 ---
 
 ## Prerequisites
@@ -37,15 +43,17 @@ Copy the `database_id` and replace `REPLACE_WITH_YOUR_D1_ID` in `apps/api/wrangl
 
 ---
 
-## Step 2 — Run the schema migration
+## Step 2 — Apply D1 migrations
 
 ```bash
 # Production
-pnpm --filter @unsaid/api exec wrangler d1 execute unsaid-db --file=schema.sql
+pnpm --filter @unsaid/api run db:migrate:remote
 
 # Verify
 pnpm --filter @unsaid/api exec wrangler d1 execute unsaid-db --command "SELECT name FROM sqlite_master WHERE type='table';"
 ```
+
+Use the versioned files in `apps/api/migrations/` for production. `schema.sql` is kept as a schema snapshot/reference and for simple local resets.
 
 ---
 
@@ -95,19 +103,19 @@ Secrets are set via Wrangler and stored encrypted in Cloudflare — never commit
 # Turnstile secret key
 pnpm --filter @unsaid/api exec wrangler secret put TURNSTILE_SECRET_KEY
 # Paste the secret key when prompted
-
-# Allowed CORS origin (your Pages domain)
-pnpm --filter @unsaid/api exec wrangler secret put ALLOWED_ORIGIN
-# Enter: https://unsaid.santi020k.com
 ```
+
+Non-sensitive production Worker variables, including `ALLOWED_ORIGINS` and `TURNSTILE_ALLOWED_HOSTNAMES`, live in `apps/api/wrangler.toml` so automated deploys do not depend on dashboard-only config.
 
 ---
 
 ## Step 6 — Deploy the Workers API
 
 ```bash
-pnpm --filter @unsaid/api exec wrangler deploy
+pnpm deploy:api
 ```
+
+This applies remote D1 migrations first, then deploys the Worker. If there are no pending migrations, Wrangler exits cleanly and continues.
 
 After deploy, Wrangler will print the Worker URL:
 
@@ -150,12 +158,16 @@ Keep this URL — you'll need it for the Pages environment variable.
 ### Option B: Wrangler Pages (CI/CD)
 
 ```bash
-# Build first
+# Build with production public env
+PUBLIC_API_URL=https://api.unsaid.santi020k.com \
+PUBLIC_TURNSTILE_SITE_KEY=<turnstile-site-key> \
 pnpm --filter @unsaid/web run build
 
 # Deploy
 pnpm --filter @unsaid/api exec wrangler pages deploy apps/web/dist --project-name=unsaid
 ```
+
+Avoid using both Pages Git integration and Wrangler Pages deploys for the same branch unless you intentionally want duplicate deployments.
 
 ---
 
@@ -171,7 +183,7 @@ pnpm --filter @unsaid/api exec wrangler pages deploy apps/web/dist --project-nam
 
 1. Workers & Pages → unsaid-api → Settings → Triggers → Add custom domain
 2. Enter `api.unsaid.santi020k.com`
-3. Update `ALLOWED_ORIGIN` secret to `https://unsaid.santi020k.com`
+3. If the frontend domains change, update `ALLOWED_ORIGINS` and `TURNSTILE_ALLOWED_HOSTNAMES` in `apps/api/wrangler.toml`
 4. Update `PUBLIC_API_URL` in Pages env to `https://api.unsaid.santi020k.com`
 
 ---
@@ -191,12 +203,12 @@ This connects to the real Cloudflare resources but runs the Worker locally.
 ## Local development with local resources
 
 ```bash
-# First time: seed local D1
-pnpm --filter @unsaid/api exec wrangler d1 execute unsaid-db --local --file=schema.sql
+# First time: apply local D1 migrations
+pnpm --filter @unsaid/api run db:migrate
 
 # Create apps/api/.dev.vars with:
 # TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
-# ALLOWED_ORIGIN=http://localhost:4321
+# ALLOWED_ORIGINS=http://localhost:4321
 
 # Start API
 pnpm --filter @unsaid/api dev
@@ -222,9 +234,9 @@ pnpm --filter @unsaid/web dev
 | Variable | How to set | Description |
 |---|---|---|
 | `TURNSTILE_SECRET_KEY` | `wrangler secret put` | Turnstile secret (never commit) |
-| `ALLOWED_ORIGIN` | `wrangler secret put` | Permitted CORS origin |
-| `TURNSTILE_ALLOWED_HOSTNAMES` | Worker variable | Comma-separated hostnames accepted from Turnstile verification |
-| `ENABLE_AUTO_TRANSLATION` | Worker variable | Set to `true` only if public post text may be sent to the translation provider |
+| `ALLOWED_ORIGINS` | `wrangler.toml` / `.dev.vars` | Comma-separated permitted CORS origins |
+| `TURNSTILE_ALLOWED_HOSTNAMES` | `wrangler.toml` / `.dev.vars` | Comma-separated hostnames accepted from Turnstile verification |
+| `ENABLE_AUTO_TRANSLATION` | `wrangler.toml` / `.dev.vars` | Set to `true` only if public post text may be sent to the translation provider |
 | `DB` | `wrangler.toml` binding | D1 database binding |
 | `RATE_LIMIT` | `wrangler.toml` binding | KV namespace binding |
 
@@ -234,35 +246,26 @@ pnpm --filter @unsaid/web dev
 
 The `.github/workflows/ci.yml` workflow runs on every PR and push to `main`:
 - Lint + type-check
+- E2E + accessibility tests
 - Build (validates the Astro build succeeds)
 
 **Cloudflare Pages deploys automatically** on push to `main` when the repo is connected via the dashboard.
 
-**Workers do not auto-deploy via CI** in the current setup. To add auto-deploy:
+**Workers API deploys automatically** on push to `main` after the build and test jobs pass. The deploy job:
 
-```yaml
-# Add to ci.yml after the build job
-deploy-api:
-  needs: build
-  if: github.ref == 'refs/heads/main'
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: pnpm/action-setup@v4
-      with:
-        version: 10.32.1
-    - uses: actions/setup-node@v4
-      with:
-        node-version-file: .node-version
-        cache: pnpm
-    - run: pnpm install --frozen-lockfile
-    - run: pnpm --filter @unsaid/api exec wrangler deploy
-      env:
-        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-```
+1. Installs dependencies with the pinned pnpm version.
+2. Runs `pnpm --filter @unsaid/api run db:migrate:remote`.
+3. Runs `pnpm --filter @unsaid/api run deploy:worker`.
 
-Add `CLOUDFLARE_API_TOKEN` to your GitHub repository secrets. Generate the token at:
-dash.cloudflare.com → My Profile → API Tokens → Create Token → "Edit Cloudflare Workers" template.
+Add these GitHub repository secrets before relying on automated API deploys:
+
+| Secret | Purpose |
+|---|---|
+| `CLOUDFLARE_API_TOKEN` | Lets Wrangler apply D1 migrations and deploy the Worker |
+| `CLOUDFLARE_ACCOUNT_ID` | Required by Wrangler in non-interactive CI |
+| `TURNSTILE_SITE_KEY` | Used by the CI build for the public frontend Turnstile key |
+
+Generate the Cloudflare token at dash.cloudflare.com → My Profile → API Tokens. Start with the "Edit Cloudflare Workers" template and make sure the token can deploy Workers and apply D1 migrations for this account.
 
 ---
 
@@ -279,7 +282,7 @@ Follow Steps 1–3 and replace the placeholder IDs in `apps/api/wrangler.toml`.
 ### CORS errors in the browser
 
 The API returns `403` or the browser blocks the request. Check:
-1. `ALLOWED_ORIGIN` secret matches the exact Pages URL (no trailing slash)
+1. `ALLOWED_ORIGINS` in `apps/api/wrangler.toml` includes the exact Pages URL (no trailing slash)
 2. The `PUBLIC_API_URL` in Pages env points to the correct Worker URL
 
 ### Turnstile always fails in local dev
@@ -296,7 +299,7 @@ These always pass validation and are safe for local/staging.
 no such table: posts
 ```
 
-Run the schema migration (Step 2). Don't forget `--local` for local dev.
+Run the D1 migrations (Step 2). Use `pnpm --filter @unsaid/api run db:migrate` for local dev.
 
 ### Rate limiter not working locally
 

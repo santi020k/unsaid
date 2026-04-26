@@ -6,8 +6,8 @@
 # Get real key at: dash.cloudflare.com > Turnstile
 TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 
-# Allowed CORS origin (frontend URL)
-ALLOWED_ORIGIN=http://localhost:4321
+# Allowed CORS origins (comma-separated frontend URLs)
+ALLOWED_ORIGINS=http://localhost:4321
 
 # Comma-separated hostnames accepted from Turnstile verification.
 # Keep empty for local test keys; set production hostnames before deploy.

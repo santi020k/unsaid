@@ -65,7 +65,7 @@ cp apps/api/.dev.vars.example apps/api/.dev.vars
 | `PUBLIC_API_URL` | web | Workers API URL (`http://localhost:8787` locally) |
 | `PUBLIC_TURNSTILE_SITE_KEY` | web | Turnstile site key (use test key locally) |
 | `TURNSTILE_SECRET_KEY` | api | Turnstile secret key (use test key locally) |
-| `ALLOWED_ORIGIN` | api | Frontend origin for CORS |
+| `ALLOWED_ORIGINS` | api | Comma-separated frontend origins for CORS |
 
 **Turnstile test keys** (always pass, safe for local dev):
 - Site key: `1x00000000000000000000AA`
@@ -89,7 +89,7 @@ pnpm --filter @unsaid/api dev    # http://localhost:8787
 For the API, you need a local D1 database first:
 
 ```bash
-pnpm --filter @unsaid/api exec wrangler d1 execute unsaid-db --local --file=schema.sql
+pnpm --filter @unsaid/api run db:migrate
 ```
 
 ## Scripts

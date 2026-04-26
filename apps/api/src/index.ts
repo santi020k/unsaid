@@ -7,11 +7,26 @@ import type { Bindings } from './types.js'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+const parseOrigins = (raw: string | undefined): string[] => {
+  const origins = raw?.split(',') ?? []
+
+  return origins.map(origin => origin.trim()).filter(Boolean)
+}
+
+const resolveCorsOrigin = (origin: string, c: Context<{ Bindings: Bindings }>): string | null => {
+  const allowedOrigins = [
+    ...parseOrigins(c.env.ALLOWED_ORIGINS),
+    ...parseOrigins(c.env.ALLOWED_ORIGIN)
+  ]
+
+  return allowedOrigins.includes(origin) ? origin : null
+}
+
 app.use('*', logger())
 
 app.use(
   '/api/*', cors({
-    origin: (_origin, c: Context<{ Bindings: Bindings }>) => c.env.ALLOWED_ORIGIN,
+    origin: resolveCorsOrigin,
     allowMethods: ['GET', 'POST', 'OPTIONS'],
     allowHeaders: ['Content-Type'],
     maxAge: 86400
