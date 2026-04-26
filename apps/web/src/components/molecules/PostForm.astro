@@ -15,7 +15,7 @@ const t = useTranslations(locale)
 ---
 
 <section class="truth-card" aria-label={t('form.title')}>
-  <h2 class="mb-6 heading-display text-2xl">{t('form.title')}</h2>
+  <h2 id="form-heading" class="mb-6 heading-display text-2xl">{t('form.title')}</h2>
 
   <form id="post-form" novalidate>
     <input type="hidden" name="locale" value={locale} />
@@ -29,6 +29,7 @@ const t = useTranslations(locale)
         minlength={POST_MIN_LENGTH}
         placeholder={t('form.placeholder')}
         class="field-surface"
+        aria-labelledby="form-heading"
         aria-describedby="char-count form-status"
         required
       >

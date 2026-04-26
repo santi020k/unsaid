@@ -32,6 +32,51 @@ jobs:
 
       - run: pnpm turbo run lint check --filter=@unsaid/web --filter=@unsaid/api --filter=@unsaid/shared
 
+  test:
+    name: E2E & Accessibility
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json') }}
+
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @unsaid/web exec playwright install chromium --with-deps
+
+      - name: Install Playwright Chromium system deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @unsaid/web exec playwright install-deps chromium
+
+      - run: pnpm turbo run test --filter=@unsaid/web
+        env:
+          PUBLIC_API_URL: https://unsaid-api.workers.dev
+          PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 7
+
   build:
     name: Build
     runs-on: ubuntu-latest
