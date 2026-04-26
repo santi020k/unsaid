@@ -20,7 +20,7 @@ Key constraints that must never be violated:
 ## Architecture
 
 ```
-apps/web   →  Astro 6 + Tailwind v4  →  Cloudflare Pages  (SSR via @astrojs/cloudflare)
+apps/web   →  Astro 6 + Tailwind v4  →  Cloudflare Worker + static assets (SSR via @astrojs/cloudflare)
 apps/api   →  Hono 4               →  Cloudflare Workers (wrangler deploy)
 packages/shared  →  TypeScript types used by both apps (Post, CreatePostBody, etc.)
 ```
@@ -37,7 +37,7 @@ The frontend SSR-fetches the initial post list at request time. If that fetch fa
 | pnpm | 10.32.1 | Pinned in `packageManager` field |
 | Turborepo | ^2.5.4 | Task orchestration |
 | Astro | ^6.1.9 | `output: 'server'` mode |
-| `@astrojs/cloudflare` | ^13.x | Adapter for Cloudflare Pages |
+| `@astrojs/cloudflare` | ^13.x | Adapter for Cloudflare Workers (not legacy Pages static hosting) |
 | Tailwind CSS | ^4.x | v4 syntax — `@theme`, `@utility`, not `theme.extend` |
 | Hono | ^4.12.x | Cloudflare Workers framework |
 | Wrangler | ^4.85.x | CF Workers CLI |
@@ -87,7 +87,7 @@ pnpm --filter @unsaid/api exec wrangler d1 execute unsaid-db --local --file=sche
 
 # Deploy
 pnpm --filter @unsaid/api exec wrangler deploy
-# Web deploys via Cloudflare Pages CI on push to main
+# Web: pnpm deploy:web  (or CI deploy-web job on push to main)
 ```
 
 ---

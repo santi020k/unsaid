@@ -34,6 +34,7 @@
     "check": "turbo run check",
     "test": "turbo run test",
     "deploy:api": "pnpm --filter @unsaid/api run deploy",
+    "deploy:web": "pnpm turbo run deploy --filter=@unsaid/web",
     "spellcheck": "cspell '**/*.{md,json}' --no-progress --exclude '**/node_modules/**' --exclude '**/dist/**'",
     "knip": "knip",
     "pre-commit": "lint-staged --quiet",

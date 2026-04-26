@@ -4,7 +4,7 @@ This guide covers deploying Unsaid to Cloudflare from scratch. It assumes you ha
 
 Ongoing production deploys should be automated:
 
-- Cloudflare Pages deploys `apps/web` on push to `main` through the Pages Git integration.
+- GitHub Actions deploys the Astro frontend as a **Cloudflare Worker** (`pnpm turbo run deploy --filter=@unsaid/web`) after CI passes on `main`.
 - GitHub Actions applies D1 migrations and deploys `apps/api` after CI passes on `main`.
 - Manual steps below are only for first-time Cloudflare resources, secrets, and domains.
 
@@ -39,7 +39,7 @@ database_name = "unsaid-db"
 database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
-Copy the `database_id` and replace `REPLACE_WITH_YOUR_D1_ID` in `apps/api/wrangler.toml`.
+Keep the `database_id` private. For local deploys, replace `REPLACE_WITH_YOUR_D1_ID` in `apps/api/wrangler.toml`. For GitHub Actions deploys, add it as the `CLOUDFLARE_D1_DATABASE_ID` repository secret.
 
 ---
 
@@ -73,12 +73,12 @@ binding = "RATE_LIMIT"
 id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
-Copy the `id` and replace `REPLACE_WITH_YOUR_KV_ID` in `apps/api/wrangler.toml`.
+Keep the `id` private. For local deploys, replace `REPLACE_WITH_YOUR_KV_ID` in `apps/api/wrangler.toml`. For GitHub Actions deploys, add it as the `CLOUDFLARE_KV_NAMESPACE_ID` repository secret.
 
 > Also create a preview namespace for local dev (optional):
 > ```bash
 > pnpm --filter @unsaid/api exec wrangler kv namespace create RATE_LIMIT --preview
-> # Add preview_id to wrangler.toml
+> # Add preview_id to wrangler.toml locally, or to GitHub as CLOUDFLARE_PREVIEW_KV_NAMESPACE_ID
 > ```
 
 ---
@@ -90,7 +90,7 @@ Copy the `id` and replace `REPLACE_WITH_YOUR_KV_ID` in `apps/api/wrangler.toml`.
 3. Add your domain (`unsaid.santi020k.com`)
 4. Copy the **Site Key** (public) and **Secret Key** (private)
 
-The site key goes in Cloudflare Pages environment variables.
+The site key must be present at **build time** for the web Worker (GitHub Actions secret `TURNSTILE_SITE_KEY`, or your local shell when running `pnpm --filter @unsaid/web run build`).
 The secret key goes in Workers secrets (Step 5).
 
 ---
@@ -123,61 +123,54 @@ After deploy, Wrangler will print the Worker URL:
 https://unsaid-api.<your-subdomain>.workers.dev
 ```
 
-Keep this URL — you'll need it for the Pages environment variable.
+Keep this URL — you'll need it for `PUBLIC_API_URL` when building the frontend.
 
 > To deploy with a custom domain (e.g., `api.unsaid.santi020k.com`), go to:
 > Workers & Pages → unsaid-api → Settings → Triggers → Add custom domain
 
 ---
 
-## Step 7 — Deploy the frontend via Cloudflare Pages
+## Step 7 — Deploy the frontend (Astro → Cloudflare Worker)
 
-### Option A: Cloudflare dashboard (recommended for first setup)
+**Important:** Astro 6 with `@astrojs/cloudflare` v13+ targets [Cloudflare Workers with static assets](https://docs.astro.build/en/guides/deploy/cloudflare/), not legacy **Cloudflare Pages** static hosting. Uploading `apps/web/dist` to Pages (expecting a root `index.html`) produces **404** on `/` because the real app is a Worker (`dist/server/entry.mjs`) plus assets under `dist/client/`.
 
-1. Go to **Workers & Pages** → **Create** → **Pages**
-2. Connect to your Git provider and select the `unsaid` repo
-3. Configure build settings:
+### Option A: GitHub Actions (default for this repo)
 
-| Setting | Value |
-|---|---|
-| Framework preset | Astro |
-| Build command | `pnpm turbo run build --filter=@unsaid/web` |
-| Build output directory | `apps/web/dist` |
-| Root directory | `/` (monorepo root) |
+On push to `main`, the `deploy-web` job runs `pnpm turbo run deploy --filter=@unsaid/web` (build, then `wrangler deploy --config dist/server/wrangler.json`). Use the same Cloudflare repository secrets as in the **CI/CD via GitHub Actions** section below (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `TURNSTILE_SITE_KEY`).
 
-4. Add environment variables (Production):
+### Option B: Cloudflare dashboard — Workers Builds
 
-| Variable | Value |
-|---|---|
-| `PUBLIC_API_URL` | `https://unsaid-api.<your-subdomain>.workers.dev` |
-| `PUBLIC_TURNSTILE_SITE_KEY` | Your Turnstile site key |
-| `NODE_VERSION` | `22` |
-| `PNPM_VERSION` | `10.32.1` |
+1. **Workers & Pages** → **Create** → follow **Import a repository** / **Workers Builds** for a Worker (not “Pages” static upload).
+2. Monorepo root: build command e.g. `pnpm install --frozen-lockfile && pnpm turbo run build --filter=@unsaid/web`, deploy command `pnpm --filter @unsaid/web exec wrangler deploy --config dist/server/wrangler.json`.
+3. Provide build-time env: `PUBLIC_API_URL`, `PUBLIC_TURNSTILE_SITE_KEY`, `NODE_VERSION=22`, `PNPM_VERSION=10.32.1` (match `packageManager`).
 
-5. Deploy.
+See Astro’s [Cloudflare Workers deploy guide](https://docs.astro.build/en/guides/deploy/cloudflare/).
 
-### Option B: Wrangler Pages (CI/CD)
+### Option C: Manual Wrangler (local or any CI)
 
 ```bash
-# Build with production public env
+# From repo root — build then upload the Worker + client assets
 PUBLIC_API_URL=https://api.unsaid.santi020k.com \
 PUBLIC_TURNSTILE_SITE_KEY=<turnstile-site-key> \
-pnpm --filter @unsaid/web run build
-
-# Deploy
-pnpm --filter @unsaid/api exec wrangler pages deploy apps/web/dist --project-name=unsaid
+pnpm turbo run deploy --filter=@unsaid/web
 ```
 
-Avoid using both Pages Git integration and Wrangler Pages deploys for the same branch unless you intentionally want duplicate deployments.
+Or, after a build:
+
+```bash
+cd apps/web && pnpm exec wrangler deploy --config dist/server/wrangler.json
+```
+
+Worker name is set in `apps/web/wrangler.toml` (`name = "unsaid"`). Custom domains attach to this Worker under **Workers & Pages** → **unsaid** → **Domains & Routes**.
 
 ---
 
 ## Step 8 — Custom domain
 
-### For Pages (frontend)
+### For the web Worker (frontend)
 
-1. Workers & Pages → unsaid → Custom domains → Set up a custom domain
-2. Enter `unsaid.santi020k.com` and `www.unsaid.santi020k.com`
+1. Workers & Pages → **unsaid** (Worker) → **Domains & Routes** → Add custom domain
+2. Enter `unsaid.santi020k.com` and `www.unsaid.santi020k.com` (or use the same hostnames your `_redirects` expects)
 3. Cloudflare auto-provisions SSL
 
 ### For Workers (API)
@@ -185,7 +178,7 @@ Avoid using both Pages Git integration and Wrangler Pages deploys for the same b
 1. Workers & Pages → unsaid-api → Settings → Triggers → Add custom domain
 2. Enter `api.unsaid.santi020k.com`
 3. If the frontend domains change, update `ALLOWED_ORIGINS` and `TURNSTILE_ALLOWED_HOSTNAMES` in `apps/api/wrangler.toml`
-4. Update `PUBLIC_API_URL` in Pages env to `https://api.unsaid.santi020k.com`
+4. Update `PUBLIC_API_URL` for the next **web** build/CI run to `https://api.unsaid.santi020k.com`
 
 ---
 
@@ -222,13 +215,15 @@ pnpm --filter @unsaid/web dev
 
 ## Environment variable reference
 
-### `apps/web` (Cloudflare Pages)
+### `apps/web` (build-time for the Cloudflare Worker)
+
+These are read when Astro builds (`astro build`), not at Worker runtime:
 
 | Variable | Required | Description |
 |---|---|---|
 | `PUBLIC_API_URL` | Yes | Full URL of the Workers API |
 | `PUBLIC_TURNSTILE_SITE_KEY` | Yes | Turnstile site key (public, safe to expose) |
-| `NODE_VERSION` | Recommended | Set to `22` for Pages build; `.node-version` also pins this |
+| `NODE_VERSION` | Recommended | Set to `22` in CI or dashboard; `.node-version` also pins this |
 | `PNPM_VERSION` | Recommended | Set to `10.32.1` to match `packageManager` |
 
 ### `apps/api` (Cloudflare Workers)
@@ -251,9 +246,9 @@ The `.github/workflows/ci.yml` workflow runs on every PR and push to `main`:
 - E2E + accessibility tests
 - Build (validates the Astro build succeeds)
 
-**Cloudflare Pages deploys automatically** on push to `main` when the repo is connected via the dashboard.
+**The web Worker deploys automatically** on push to `main` after the build and test jobs pass (`deploy-web` job): `pnpm turbo run deploy --filter=@unsaid/web`.
 
-**Workers API deploys automatically** on push to `main` after the build and test jobs pass. The deploy job:
+**The Workers API deploys automatically** on push to `main` after the build and test jobs pass (`deploy-api` job):
 
 1. Installs dependencies with the pinned pnpm version.
 2. Runs `pnpm --filter @unsaid/api run db:migrate:remote`.
@@ -265,6 +260,9 @@ Add these GitHub repository secrets before relying on automated API deploys:
 |---|---|
 | `CLOUDFLARE_API_TOKEN` | Lets Wrangler apply D1 migrations and deploy the Worker |
 | `CLOUDFLARE_ACCOUNT_ID` | Required by Wrangler in non-interactive CI |
+| `CLOUDFLARE_D1_DATABASE_ID` | Injected into `wrangler.toml` during the deploy job |
+| `CLOUDFLARE_KV_NAMESPACE_ID` | Injected into `wrangler.toml` during the deploy job |
+| `CLOUDFLARE_PREVIEW_KV_NAMESPACE_ID` | Injected into `wrangler.toml` during the deploy job |
 | `TURNSTILE_SITE_KEY` | Used by the CI build for the public frontend Turnstile key |
 
 Generate the Cloudflare token at dash.cloudflare.com → My Profile → API Tokens. Start with the "Edit Cloudflare Workers" template and make sure the token can deploy Workers and apply D1 migrations for this account.
@@ -273,19 +271,23 @@ Generate the Cloudflare token at dash.cloudflare.com → My Profile → API Toke
 
 ## Troubleshooting
 
+### 404 on `/` after connecting the repo to Cloudflare
+
+If the project was set up as **Cloudflare Pages** with build output directory `apps/web/dist`, the edge only sees static files under `dist/client/` and no Worker — `/` returns **404**. Remove or disable that Pages project and deploy the frontend with **`wrangler deploy`** (this repo: `pnpm turbo run deploy --filter=@unsaid/web` or the `deploy-web` GitHub Action). Astro 6 + `@astrojs/cloudflare` v13+ does not support legacy Pages static deploy for SSR apps; see the [adapter changelog](https://docs.astro.build/en/guides/integrations-guide/cloudflare/).
+
 ### `wrangler.toml` IDs still have placeholder values
 
 ```
 Error: D1 database "REPLACE_WITH_YOUR_D1_ID" not found
 ```
 
-Follow Steps 1–3 and replace the placeholder IDs in `apps/api/wrangler.toml`.
+For local deploys, follow Steps 1–3 and replace the placeholder IDs in `apps/api/wrangler.toml`. For GitHub Actions deploys, make sure `CLOUDFLARE_D1_DATABASE_ID`, `CLOUDFLARE_KV_NAMESPACE_ID`, and `CLOUDFLARE_PREVIEW_KV_NAMESPACE_ID` are set as repository secrets.
 
 ### CORS errors in the browser
 
 The API returns `403` or the browser blocks the request. Check:
-1. `ALLOWED_ORIGINS` in `apps/api/wrangler.toml` includes the exact Pages URL (no trailing slash)
-2. The `PUBLIC_API_URL` in Pages env points to the correct Worker URL
+1. `ALLOWED_ORIGINS` in `apps/api/wrangler.toml` includes the exact site origin you load in the browser (no trailing slash), e.g. `https://unsaid.santi020k.com`
+2. `PUBLIC_API_URL` used when **building** the web app points to the correct API Worker URL
 
 ### Turnstile always fails in local dev
 

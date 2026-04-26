@@ -16,7 +16,7 @@ An anonymous platform for sharing hard truths and unfiltered observations about 
 | Database | Cloudflare D1 (SQLite at the edge) |
 | Rate limiting | Cloudflare KV |
 | CAPTCHA | Cloudflare Turnstile |
-| Hosting | Cloudflare Pages (web) + Workers (api) |
+| Hosting | Cloudflare Workers (Astro web + Hono API) |
 | i18n | Astro i18n routing (`en` default, `es`) |
 | Linting | `@santi020k/eslint-config-basic` |
 
@@ -25,7 +25,7 @@ An anonymous platform for sharing hard truths and unfiltered observations about 
 ```
 unsaid/
 ├── apps/
-│   ├── web/              Astro 6 frontend → Cloudflare Pages
+│   ├── web/              Astro 6 frontend → Cloudflare Worker (static assets + SSR)
 │   └── api/              Hono backend → Cloudflare Workers
 ├── packages/
 │   └── shared/           TypeScript types shared across apps
