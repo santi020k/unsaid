@@ -40,7 +40,17 @@ export const ui = {
     'footer.author': 'Santiago Molina',
     'footer.repo': 'GitHub',
     'footer.repo_aria': 'View the Unsaid source code on GitHub',
-    'footer.privacy': 'No data collected. No cookies. No bullshit.'
+    'footer.privacy': 'No data collected. No cookies. No bullshit.',
+    'footer.legal_nav_aria': 'Legal',
+    'footer.legal_privacy': 'Privacy',
+    'footer.legal_terms': 'Terms of use',
+
+    'legal.last_updated': 'Last updated: April 26, 2026',
+    'legal.privacy_title': 'Privacy policy',
+    'legal.privacy_desc':
+      'What Unsaid collects and how we use information when you read or post on this site.',
+    'legal.terms_title': 'Terms of use',
+    'legal.terms_desc': 'How you may use the Unsaid service, and limitations of liability.'
   },
   es: {
     'nav.home': 'Inicio',
@@ -83,7 +93,17 @@ export const ui = {
     'footer.author': 'Santiago Molina',
     'footer.repo': 'GitHub',
     'footer.repo_aria': 'Ver el código fuente de Unsaid en GitHub',
-    'footer.privacy': 'Sin datos recopilados. Sin cookies. Sin mentiras.'
+    'footer.privacy': 'Sin datos recopilados. Sin cookies. Sin mentiras.',
+    'footer.legal_nav_aria': 'Información legal',
+    'footer.legal_privacy': 'Privacidad',
+    'footer.legal_terms': 'Términos de uso',
+
+    'legal.last_updated': 'Última actualización: 26 de abril de 2026',
+    'legal.privacy_title': 'Política de privacidad',
+    'legal.privacy_desc':
+      'Qué recopila Unsaid y cómo se usa la información al leer o publicar en este sitio.',
+    'legal.terms_title': 'Términos de uso',
+    'legal.terms_desc': 'Cómo puedes usar el servicio Unsaid y limitaciones de responsabilidad.'
   }
 } as const
 

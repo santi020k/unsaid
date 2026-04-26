@@ -1,0 +1,128 @@
+---
+import LegalPageShell from '@/components/molecules/LegalPageShell.astro'
+
+import { useTranslations } from '@/i18n/utils'
+import { SITE } from '@/site.config'
+
+const locale = 'es'
+const t = useTranslations(locale)
+const licenseOnGit = `${SITE.repositoryUrl}/blob/main/LICENSE`
+---
+
+<LegalPageShell
+  locale={locale}
+  title={t('legal.terms_title')}
+  description={t('legal.terms_desc')}
+  lastUpdatedLabel={t('legal.last_updated')}
+>
+  <section>
+    <h2>Aceptación</h2>
+    <p>
+      Al usar Unsaid (este sitio y la API asociada) aceptas estos términos. Si
+      no estás de acuerdo, no uses el servicio.
+    </p>
+  </section>
+  <section>
+    <h2>El servicio</h2>
+    <p>
+      Unsaid ofrece leer y publicar mensajes anónimos y públicos. El
+      servicio, su disponibilidad y sus funciones pueden cambiar o
+      interrumpirse en cualquier momento, con o sin aviso previo, por
+      motivos técnicos, de coste o legales.
+    </p>
+  </section>
+  <section>
+    <h2>Tu contenido</h2>
+    <p>
+      Eres responsable de lo que publicas. Debe respetar la ley de tu
+      jurisdicción. No utilices el servicio para dañar a terceros, acosar,
+      difundir malware, vulnerar derechos ajenos ni cometer ilícitos. Otorgas
+      a quienes operan el servicio una licencia no exclusiva, mundial y
+      libre de regalías para almacenar, procesar, mostrar y traducir tus
+      publicaciones en la medida necesaria para ofrecer el servicio, incluso
+      con automatización. Puedes dejar de publicar, pero el contenido ya
+      publicado pudo leerse o almacenarse en caché por otras partes; no
+      estamos obligados a borrar el pasado de todos los rastros en
+      internet.
+    </p>
+  </section>
+  <section>
+    <h2>Exención de garantías</h2>
+    <p>
+      El servicio y el
+      <a
+        href={licenseOnGit}
+        target="_blank"
+        rel="noopener noreferrer"
+      >código abierto
+      </a> en el que se basa, cuando esté publicado, se
+      ofrecen <strong>tal cual</strong> y <strong>según
+        disponibilidad
+                                          </strong>, sin garantía de ningún tipo, expresa o
+      implícita, incluidas comerciabilidad, idoneidad para un fin concreto o
+      no infracción. Quien mantiene u opera el servicio no prefiltra
+      publicaciones, garantiza la veracidad o mantiene un entorno exento
+      de material ofensivo o falso. El uso es bajo tu propio riesgo.
+    </p>
+  </section>
+  <section>
+    <h2>Limitación de responsabilidad</h2>
+    <p>
+      En el máximo alcance que permita la ley, quienes mantienen, aportan y
+      alojan Unsaid no serán responsables de daños indirectos, incidentales,
+      especiales, consecuenciales o punitivos, ni de la pérdida de beneficios,
+      datos o goodwill, que deriven del servicio, del contenido de usuarios
+      o de no poder utilizarlo, aun con conocimiento de dichas posibilidades. La
+      responsabilidad total, cuando no pueda excluirse, queda en conjunto
+      limitada a lo que hayas pagado por el servicio; en la instancia
+      pública, salvo un acuerdo distinto escrito, esa cantidad es
+      <strong>cero</strong>. Algunas jurisdicciones no permiten
+      limitaciones: en ellas aplicamos la restricción máxima permitida.
+    </p>
+  </section>
+  <section>
+    <h2>Indemnidad</h2>
+    <p>
+      Aceptas defender y eximir a quienes mantienen y alojan el servicio
+      de reclamaciones, daños, pérdidas y gastos (incluidos honorarios
+      razonables de abogado) vinculados a tu uso, a tu contenido o al
+      incumplimiento de estos términos, en la medida en que la ley lo
+      permita.
+    </p>
+  </section>
+  <section>
+    <h2>Licencia de software</h2>
+    <p>
+      El código fuente del proyecto, si se publica, se ofrece bajo la
+      <a
+        href={licenseOnGit}
+        target="_blank"
+        rel="noopener noreferrer"
+      >licencia MIT
+      </a>. El uso de una copia autohospedada se rige también
+      por esa licencia; estos términos de uso tratan de una instancia en
+      servicio, incluidas despliegues no operados por ti.
+    </p>
+  </section>
+  <section>
+    <h2>Cambios</h2>
+    <p>
+      Estos términos pueden cambiarse. La fecha al inicio de la página
+      se actualizará. El uso continuo de la instancia pública implica
+      aceptar los términos actualizados. En tu propio despliegue aplican
+      la licencia habitual y tus propias condiciones.
+    </p>
+  </section>
+  <section>
+    <h2>Contacto</h2>
+    <p>
+      La discusión técnica o comunitaria puede desarrollarse en
+      <a
+        href={SITE.repositoryUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >GitHub
+      </a>. En el pie encontrarás el enlace al sitio del autor.
+    </p>
+  </section>
+</LegalPageShell>

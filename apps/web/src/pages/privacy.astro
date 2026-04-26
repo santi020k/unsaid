@@ -1,0 +1,102 @@
+---
+import LegalPageShell from '@/components/molecules/LegalPageShell.astro'
+
+import { useTranslations } from '@/i18n/utils'
+import { SITE } from '@/site.config'
+
+const locale = 'en'
+const t = useTranslations(locale)
+---
+
+<LegalPageShell
+  locale={locale}
+  title={t('legal.privacy_title')}
+  description={t('legal.privacy_desc')}
+  lastUpdatedLabel={t('legal.last_updated')}
+>
+  <section>
+    <h2>Summary</h2>
+    <p>
+      Unsaid is built to be anonymous. There are no user accounts, no
+      first-party marketing cookies, and we do not sell your personal
+      information. This page explains what the service and its infrastructure
+      still need to process so the site can work, stay available, and resist
+      abuse.
+    </p>
+  </section>
+  <section>
+    <h2>Content you see and share</h2>
+    <p>
+      Truths you publish and read are stored and displayed for others to see
+      in the app. We keep what is required to run the feed, including the text
+      of each post, its language, identifiers needed for our database, and a
+      timestamp. Posts are public. Do not share secrets or data you are not
+      allowed to make public.
+    </p>
+  </section>
+  <section>
+    <h2>Abuse protection and short‑lived technical data</h2>
+    <p>
+      To limit spam, we use a CAPTCHA (Cloudflare Turnstile) and a daily
+      per‑IP posting limit. For the limit, a short‑lived key tied to your IP
+      may be written to storage at the network edge, with a maximum retention
+      on the order of a day, so a counter can be enforced. The CAPTCHA check is
+      performed when you post; the token is not stored on our server as part of
+      the post. Traffic may pass through the operator’s network (e.g. Cloudflare)
+      and can be subject to that provider’s logging and security practices
+      as described in their own policies.
+    </p>
+  </section>
+  <section>
+    <h2>No sign‑in, no analytics profile</h2>
+    <p>
+      We do not maintain accounts or a profile of you. We do not use your data
+      for targeted advertising. Your browser and device may still send
+      information that is normal for any website, such as IP address and
+      user‑agent; our goal is to use the minimum that service providers and the
+      platform need to deliver and protect the app.
+    </p>
+  </section>
+  <section>
+    <h2>Automated translation</h2>
+    <p>
+      In some cases we may generate a translated version of a post to show in
+      another language. The translation is derived from the public post text.
+    </p>
+  </section>
+  <section>
+    <h2>Your choices</h2>
+    <p>
+      You can choose not to use the site, not to post, or to use a browser
+      and network setup that you trust. Do not use Unsaid if the processing
+      described here is not acceptable to you.
+    </p>
+  </section>
+  <section>
+    <h2>Contact</h2>
+    <p>
+      The project is
+      <a
+        href={SITE.repositoryUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >open on GitHub
+      </a>. You can reach the maintainer via the
+      <a
+        href={SITE.authorUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >author site
+      </a> linked in the footer.
+    </p>
+  </section>
+  <section>
+    <h2>Changes</h2>
+    <p>
+      This policy may be updated from time to time. The “Last updated” line at
+      the top of this page will be revised when material changes are made. Your
+      continued use of the site after changes are posted means you understand
+      the new description.
+    </p>
+  </section>
+</LegalPageShell>

@@ -1,0 +1,41 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import type { SupportedLocale } from '@/site.config'
+
+interface Props {
+  locale: SupportedLocale
+  title: string
+  description: string
+  lastUpdatedLabel: string
+}
+
+const { locale, title, description, lastUpdatedLabel } = Astro.props
+---
+
+<BaseLayout locale={locale} title={title} description={description}>
+  <article class="section-shell max-w-2xl py-16 pb-24">
+    <h1
+      class="
+        mb-3 text-2xl font-semibold tracking-tight text-text-primary
+        sm:text-3xl
+      "
+    >
+      {title}
+    </h1>
+    <p class="mb-10 text-sm text-text-faint">
+      {lastUpdatedLabel}
+    </p>
+    <div
+      class="
+        space-y-8 text-sm leading-relaxed text-text-muted
+        [&_h2]:pt-1 [&_h2]:text-base [&_h2]:font-medium [&_h2]:text-text-primary
+        [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5
+        [&_a]:text-text-primary [&_a]:underline [&_a]:decoration-dotted
+        [&_a]:transition-colors
+        hover:[&_a]:text-accent
+      "
+    >
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

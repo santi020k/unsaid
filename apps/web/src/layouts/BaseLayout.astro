@@ -3,7 +3,7 @@ import { Icon } from 'astro-icon/components'
 
 import '@/styles/global.css'
 
-import { getAlternateLocale, useTranslations } from '@/i18n/utils'
+import { getAlternatePath, getLocalePaths, useTranslations } from '@/i18n/utils'
 import type { SupportedLocale } from '@/site.config'
 import { SITE } from '@/site.config'
 
@@ -16,12 +16,13 @@ interface Props {
 const { title, description = SITE.description, locale } = Astro.props
 const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name
 const t = useTranslations(locale)
-const altLocale = getAlternateLocale(locale)
-const altUrl = altLocale === 'en' ? '/' : `/${altLocale}/`
+const altPath = getAlternatePath(locale, Astro.url.pathname)
 const site = Astro.site ?? new URL(SITE.url)
 const canonicalURL = new URL(Astro.url.pathname, site).href
-const enUrl = new URL('/', site).href
-const esUrl = new URL('/es/', site).href
+const { en: enPath, es: esPath } = getLocalePaths(Astro.url.pathname)
+const enUrl = new URL(enPath, site).href
+const esUrl = new URL(esPath, site).href
+const homePath = locale === 'en' ? '/' : '/es/'
 const ogImageUrl = new URL('/banner.png', site).href
 const ogLocale = locale === 'es' ? 'es_ES' : 'en_US'
 const ogLocaleAlternate = locale === 'es' ? 'en_US' : 'es_ES'
@@ -102,7 +103,7 @@ const websiteJsonLd = {
         class="mx-auto flex max-w-2xl items-center justify-between p-4"
       >
         <a
-          href="/"
+          href={homePath}
           class="
             flex items-center transition-opacity duration-150
             hover:opacity-80
@@ -117,7 +118,7 @@ const websiteJsonLd = {
         </a>
         <div class="flex items-center gap-4">
           <a
-            href={altUrl}
+            href={altPath}
             class="
               text-sm text-text-muted transition-colors duration-150
               hover:text-text-primary
@@ -141,7 +142,7 @@ const websiteJsonLd = {
         "
         data-animate
       >
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-2">
           <p class="text-sm text-text-muted">
             {t('footer.built_prefix')}
             <a
@@ -154,6 +155,20 @@ const websiteJsonLd = {
             </a>
           </p>
           <p class="text-xs text-text-faint">{t('footer.privacy')}</p>
+          <nav aria-label={t('footer.legal_nav_aria')} class="flex flex-wrap gap-x-3 gap-y-1 text-xs">
+            <a
+              href={locale === 'en' ? '/privacy' : '/es/privacy'}
+              class="footer-link"
+            >
+              {t('footer.legal_privacy')}
+            </a>
+            <a
+              href={locale === 'en' ? '/terms' : '/es/terms'}
+              class="footer-link"
+            >
+              {t('footer.legal_terms')}
+            </a>
+          </nav>
         </div>
 
         <a
