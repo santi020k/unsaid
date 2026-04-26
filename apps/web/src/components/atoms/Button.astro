@@ -1,12 +1,11 @@
 ---
-interface Props {
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'button'> {
   variant?: 'primary' | 'ghost'
-  type?: 'button' | 'submit' | 'reset'
-  disabled?: boolean
-  class?: string
 }
 
-const { variant = 'primary', type = 'button', disabled = false, class: className } = Astro.props
+const { variant = 'primary', type = 'button', disabled = false, class: className, ...rest } = Astro.props
 ---
 
 <button
@@ -17,6 +16,7 @@ const { variant = 'primary', type = 'button', disabled = false, class: className
     disabled && 'cursor-not-allowed opacity-50',
     className
   ]}
+  {...rest}
 >
   <slot />
 </button>

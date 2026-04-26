@@ -8,9 +8,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   site: 'https://unsaid.app',
   output: 'server',
-  adapter: cloudflare({
-    platformProxy: { enabled: true }
-  }),
+  adapter: cloudflare(),
   integrations: [
     sitemap(),
     robotsTxt()

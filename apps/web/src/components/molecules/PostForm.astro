@@ -68,7 +68,7 @@ const t = useTranslations(locale)
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline></script>
 
-<script define:vars={{ locale, maxLen: POST_MAX_LENGTH, minLen: POST_MIN_LENGTH, apiUrl: SITE.apiUrl }}>
+<script is:inline define:vars={{ locale, maxLen: POST_MAX_LENGTH, minLen: POST_MIN_LENGTH, apiUrl: SITE.apiUrl }}>
   const form = document.getElementById('post-form')
   const textarea = document.getElementById('post-content')
   const charCount = document.getElementById('char-count')

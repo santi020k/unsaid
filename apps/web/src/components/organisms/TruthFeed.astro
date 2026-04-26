@@ -46,7 +46,7 @@ const t = useTranslations(locale)
   }
 </section>
 
-<script define:vars={{ locale, loadMoreLabel: t('feed.load_more') }}>
+<script is:inline define:vars={{ locale, loadMoreLabel: t('feed.load_more') }}>
   let page = 1
   const feed = document.getElementById('truth-feed')
   const loadMoreBtn = document.getElementById('load-more')
