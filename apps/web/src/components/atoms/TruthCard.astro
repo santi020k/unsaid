@@ -1,5 +1,5 @@
 ---
-import { Icon } from 'astro-icon/components'
+import TablerIcon from '@/components/atoms/TablerIcon.astro'
 
 import { useTranslations } from '@/i18n/utils'
 import type { SupportedLocale } from '@/site.config'
@@ -29,11 +29,7 @@ const date = new Date(post.created_at).toLocaleDateString(locale === 'es' ? 'es'
           class="truth-post-badge border-accent/25"
           title={t('feed.badge_auto_translation_title')}
         >
-          <Icon
-            aria-hidden="true"
-            class="size-3.5 shrink-0 text-accent"
-            name="tabler:language"
-          />
+          <TablerIcon class="size-3.5 shrink-0 text-accent" name="language" />
           {t('feed.badge_auto_translation')}
         </span>
       </div>

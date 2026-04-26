@@ -1,9 +1,8 @@
 ---
-import { Icon } from 'astro-icon/components'
-
 import TruthCard from '@/components/atoms/TruthCard.astro'
 
 import { useTranslations } from '@/i18n/utils'
+import { tablerLanguageBody } from '@/icons/tabler-inline'
 import type { SupportedLocale } from '@/site.config'
 import { SITE } from '@/site.config'
 import type { Post } from '@unsaid/shared'
@@ -49,7 +48,16 @@ const t = useTranslations(locale)
 </section>
 
 <template id="truth-feed-auto-translation-icon">
-  <Icon aria-hidden="true" class="size-3.5 shrink-0 text-accent" name="tabler:language" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    viewBox="0 0 24 24"
+    fill="none"
+    class="size-3.5 shrink-0 text-accent"
+    aria-hidden="true"
+    set:html={tablerLanguageBody}
+  />
 </template>
 
 <script

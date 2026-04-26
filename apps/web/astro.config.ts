@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config'
-import icon from 'astro-icon'
 import robotsTxt from 'astro-robots-txt'
 
 import cloudflare from '@astrojs/cloudflare'
@@ -11,11 +10,6 @@ export default defineConfig({
   output: 'server',
   adapter: cloudflare(),
   integrations: [
-    icon({
-      include: {
-        tabler: ['language', 'brand-github']
-      }
-    }),
     sitemap(),
     robotsTxt()
   ],

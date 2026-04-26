@@ -1,5 +1,5 @@
 ---
-import { Icon } from 'astro-icon/components'
+import TablerIcon from '@/components/atoms/TablerIcon.astro'
 
 import '@/styles/global.css'
 
@@ -178,11 +178,7 @@ const websiteJsonLd = {
           rel="noopener noreferrer"
           aria-label={t('footer.repo_aria')}
         >
-          <Icon
-            aria-hidden="true"
-            class="size-5 shrink-0 text-current"
-            name="tabler:brand-github"
-          />
+          <TablerIcon class="size-5 shrink-0 text-current" name="brand-github" />
           <span>{t('footer.repo')}</span>
         </a>
       </div>

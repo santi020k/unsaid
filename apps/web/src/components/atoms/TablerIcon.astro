@@ -1,0 +1,28 @@
+---
+import { tablerBrandGithubBody, tablerLanguageBody } from '@/icons/tabler-inline'
+
+export type TablerIconName = 'brand-github' | 'language'
+
+interface Props {
+  name: TablerIconName
+  class?: string
+}
+
+const { name, class: className } = Astro.props
+
+const bodies: Record<TablerIconName, string> = {
+  'brand-github': tablerBrandGithubBody,
+  language: tablerLanguageBody
+}
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1em"
+  height="1em"
+  viewBox="0 0 24 24"
+  fill="none"
+  class={className}
+  aria-hidden="true"
+  set:html={bodies[name]}
+/>
