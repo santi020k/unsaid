@@ -7,7 +7,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "types": ["@cloudflare/workers-types"],
+    "lib": ["ESNext"],
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["src/*"]
     }
