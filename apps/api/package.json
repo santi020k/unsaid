@@ -1,8 +1,18 @@
 {
   "name": "@unsaid/api",
   "version": "1.0.0",
+  "description": "Unsaid HTTP API (Hono on Cloudflare Workers, D1, KV, Turnstile).",
   "private": true,
+  "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santi020k/unsaid.git",
+    "directory": "apps/api"
+  },
   "scripts": {
     "db:migrate": "wrangler d1 migrations apply unsaid-db --local",
     "db:migrate:remote": "wrangler d1 migrations apply unsaid-db --remote",

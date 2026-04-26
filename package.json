@@ -1,11 +1,31 @@
 {
   "name": "unsaid",
   "version": "1.0.0",
+  "description": "Anonymous platform for sharing hard truths — Astro, Hono, Cloudflare D1.",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@10.32.1",
   "engines": {
     "node": ">=22"
+  },
+  "keywords": [
+    "anonymous",
+    "astro",
+    "cloudflare",
+    "d1",
+    "hono",
+    "monorepo",
+    "turborepo",
+    "workers"
+  ],
+  "homepage": "https://github.com/santi020k/unsaid#readme",
+  "bugs": {
+    "url": "https://github.com/santi020k/unsaid/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santi020k/unsaid.git"
   },
   "scripts": {
     "build": "turbo run build",
@@ -34,6 +54,9 @@
       "eslint --fix"
     ],
     "apps/api/**/*.{js,ts}": [
+      "eslint --fix"
+    ],
+    "packages/shared/**/*.{js,ts}": [
       "eslint --fix"
     ],
     "**/*.{md,json}": [

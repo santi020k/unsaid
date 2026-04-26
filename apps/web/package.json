@@ -1,8 +1,18 @@
 {
   "name": "@unsaid/web",
   "version": "1.0.0",
+  "description": "Unsaid marketing and app frontend (Astro 6, Cloudflare Pages).",
   "private": true,
+  "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santi020k/unsaid.git",
+    "directory": "apps/web"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

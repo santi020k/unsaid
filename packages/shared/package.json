@@ -1,9 +1,20 @@
 {
   "name": "@unsaid/shared",
   "version": "1.0.0",
+  "description": "Shared TypeScript types and constants for Unsaid web and API.",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/santi020k/unsaid.git",
+    "directory": "packages/shared"
+  },
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -13,9 +24,12 @@
   "files": ["dist"],
   "scripts": {
     "build": "tsc",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
+    "@santi020k/eslint-config-basic": "^1.5.0",
     "typescript": "^6.0.3"
   }
 }

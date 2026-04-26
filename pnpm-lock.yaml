@@ -115,6 +115,9 @@ importers:
 
   packages/shared:
     devDependencies:
+      '@santi020k/eslint-config-basic':
+        specifier: ^1.5.0
+        version: 1.5.0(bb3dc451dbfcf73fa1c379fc8abba63b)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
