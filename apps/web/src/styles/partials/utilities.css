@@ -43,6 +43,11 @@
   @apply hover:border-accent/25 hover:shadow-[0_0_20px_rgba(232,224,0,0.06)];
 }
 
+@utility truth-post-badge {
+  @apply inline-flex items-center gap-1.5 rounded-pill border border-border px-2 py-0.5;
+  @apply text-xs font-medium text-text-muted;
+}
+
 /* ── Typography ──────────────────────────────────── */
 @utility heading-display {
   @apply font-display font-bold tracking-tight text-text-primary;

@@ -13,6 +13,7 @@
       "inputs": ["**/*.{ts,tsx,js,astro}"]
     },
     "check": {
+      "dependsOn": ["^build"],
       "inputs": ["**/*.{ts,tsx,js,astro,json}"]
     },
     "test": {

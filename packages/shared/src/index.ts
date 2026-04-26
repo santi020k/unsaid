@@ -4,6 +4,8 @@ export interface Post {
   id: string
   content: string
   locale: Locale
+  /** Set when this row is a machine translation of another post. */
+  translation_of: string | null
   created_at: string
 }
 

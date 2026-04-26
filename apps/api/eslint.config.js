@@ -4,6 +4,6 @@ export default [
   ...eslintConfig({ typescript: true }),
   {
     name: 'api/ignores',
-    ignores: ['dist/**', 'node_modules/**']
+    ignores: ['dist/**', 'node_modules/**', '.wrangler/**']
   }
 ]

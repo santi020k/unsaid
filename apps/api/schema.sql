@@ -2,10 +2,11 @@
 -- Prefer versioned migrations in ./migrations/ (see package.json db:migrate).
 
 CREATE TABLE IF NOT EXISTS posts (
-  id          TEXT     PRIMARY KEY,
-  content     TEXT     NOT NULL,
-  locale      TEXT     NOT NULL DEFAULT 'en',
-  created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+  id               TEXT     PRIMARY KEY,
+  content          TEXT     NOT NULL,
+  locale           TEXT     NOT NULL DEFAULT 'en',
+  translation_of   TEXT     REFERENCES posts (id),
+  created_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX IF NOT EXISTS idx_posts_locale ON posts (locale);
