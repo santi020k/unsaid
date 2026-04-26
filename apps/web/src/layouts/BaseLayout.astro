@@ -74,12 +74,16 @@ const altUrl = altLocale === 'en' ? '/' : `/${altLocale}/`
         <a
           href="/"
           class="
-            heading-display text-lg transition-colors duration-150
-            hover:text-accent
+            flex items-center transition-opacity duration-150
+            hover:opacity-80
           "
+          aria-label={SITE.name}
         >
-          {SITE.name}
-          <span class="ml-1 accent-dot"></span>
+          <img
+            src="/logo-simple-cropped-transparent.webp"
+            alt={SITE.name}
+            class="h-8 w-auto object-contain"
+          />
         </a>
         <div class="flex items-center gap-4">
           <a
