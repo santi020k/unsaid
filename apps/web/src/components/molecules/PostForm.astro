@@ -42,18 +42,7 @@ const t = useTranslations(locale)
       </span>
     </div>
 
-    <!-- Cloudflare Turnstile -->
-    <div class="mt-4 overflow-hidden rounded-card border border-border">
-      <div
-        class="cf-turnstile"
-        data-sitekey={SITE.turnstileSiteKey}
-        data-theme="dark"
-        data-size="flexible"
-      >
-      </div>
-    </div>
-
-    <div class="mt-4 flex items-center justify-between gap-4">
+    <div class="mt-5 flex flex-col gap-4">
       <p
         id="form-status"
         role="status"
@@ -61,9 +50,26 @@ const t = useTranslations(locale)
         class="hidden text-sm text-text-muted"
       >
       </p>
-      <Button type="submit" class="ml-auto" id="submit-btn">
-        {t('form.submit')}
-      </Button>
+
+      <!-- Turnstile left, submit right on sm+; stacked on narrow screens so ~300px widget + label fit. -->
+      <div
+        class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+      >
+        <div
+          class="turnstile-host flex shrink-0 justify-center sm:justify-start [&_.cf-turnstile]:inline-block [&_.cf-turnstile_iframe]:max-w-full [&_.cf-turnstile_iframe]:rounded-card [&_.cf-turnstile_iframe]:border [&_.cf-turnstile_iframe]:border-border/50 [&_.cf-turnstile_iframe]:shadow-none"
+        >
+          <div
+            class="cf-turnstile"
+            data-sitekey={SITE.turnstileSiteKey}
+            data-theme="dark"
+            data-size="normal"
+          >
+          </div>
+        </div>
+        <Button type="submit" class="w-full shrink-0 sm:w-auto sm:self-center" id="submit-btn">
+          {t('form.submit')}
+        </Button>
+      </div>
     </div>
   </form>
 </section>
@@ -73,6 +79,8 @@ const t = useTranslations(locale)
 <script is:inline define:vars={{ locale, maxLen: POST_MAX_LENGTH, minLen: POST_MIN_LENGTH, apiUrl: SITE.apiUrl }}>
   const form = document.getElementById('post-form')
   const textarea = document.getElementById('post-content')
+  /** Astro/ESLint-friendly multiline textarea leaves whitespace-only body; strip so caret starts at line 1. */
+  if (textarea) textarea.value = textarea.value.trimStart()
   const charCount = document.getElementById('char-count')
   const statusEl = document.getElementById('form-status')
   const submitBtn = document.getElementById('submit-btn')
@@ -114,6 +122,7 @@ const t = useTranslations(locale)
 
       showStatus('Truth published.')
       form.reset()
+      if (textarea) textarea.value = textarea.value.trimStart()
       if (charCount) charCount.textContent = String(maxLen)
       window.turnstile?.reset()
       window.dispatchEvent(new CustomEvent('truth:published'))
