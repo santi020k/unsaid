@@ -28,8 +28,8 @@
     "@axe-core/playwright": "^4.11.2",
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.49.0",
-    "@santi020k/eslint-config-astro": "^1.4.0",
-    "@santi020k/eslint-config-basic": "^1.4.0",
+    "@santi020k/eslint-config-astro": "^1.5.0",
+    "@santi020k/eslint-config-basic": "^1.5.0",
     "typescript": "^6.0.3"
   }
 }

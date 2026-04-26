@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250430.0",
-    "@santi020k/eslint-config-basic": "^1.4.0",
+    "@santi020k/eslint-config-basic": "^1.5.0",
     "typescript": "^6.0.3",
     "wrangler": "^4.85.0"
   }

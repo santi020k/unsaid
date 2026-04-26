@@ -43,7 +43,7 @@ The frontend SSR-fetches the initial post list at request time. If that fetch fa
 | Wrangler | ^4.85.x | CF Workers CLI |
 | TypeScript | ^6.x | Strictest mode |
 | ESLint | ^10.x | Flat config only |
-| `@santi020k/eslint-config-basic` | ^1.4.x | Always use this — never configure ESLint from scratch |
+| `@santi020k/eslint-config-basic` | ^1.5.x | Always use this — never configure ESLint from scratch |
 
 ---
 
