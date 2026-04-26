@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { z } from 'zod'
 
 import { mirrorPostTranslation } from '../lib/postTranslation.js'
+import { validateContent } from '../middleware/contentValidator.js'
 import { rateLimiter } from '../middleware/rateLimiter.js'
 import { validateTurnstile } from '../middleware/turnstile.js'
 import type { Bindings } from '../types.js'
@@ -88,7 +89,7 @@ posts.get('/', async c => {
 })
 
 posts.post(
-  '/', validateTurnstile, rateLimiter, createPostValidator, async c => {
+  '/', validateTurnstile, rateLimiter, createPostValidator, validateContent, async c => {
     const { content, locale } = c.req.valid('json')
 
     const post = await c.env.DB.prepare(
@@ -101,7 +102,7 @@ posts.post(
 
     if (post && isAutoTranslationEnabled(c.env.ENABLE_AUTO_TRANSLATION)) {
       c.executionCtx.waitUntil(
-        mirrorPostTranslation(c.env.DB, {
+        mirrorPostTranslation(c.env.AI, c.env.DB, {
           sourceId: post.id,
           content: post.content,
           sourceLocale: locale

@@ -14,9 +14,13 @@ binding = "RATE_LIMIT"
 id = "REPLACE_WITH_YOUR_KV_ID"
 preview_id = "REPLACE_WITH_YOUR_PREVIEW_KV_ID"
 
+[ai]
+binding = "AI"
+
 [vars]
 ALLOWED_ORIGINS = "https://unsaid.santi020k.com,https://www.unsaid.santi020k.com"
 ENABLE_AUTO_TRANSLATION = "false"
+ENABLE_AI_VALIDATION = "false"
 TURNSTILE_ALLOWED_HOSTNAMES = "unsaid.santi020k.com,www.unsaid.santi020k.com"
 
 # Local development values are loaded from apps/api/.dev.vars.

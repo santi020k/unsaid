@@ -1,8 +1,18 @@
-import type { D1Database } from '@cloudflare/workers-types'
+import type { Ai, D1Database } from '@cloudflare/workers-types'
 import type { Locale } from '@unsaid/shared'
 import { POST_MAX_LENGTH } from '@unsaid/shared'
 
-const MYMEMORY = 'https://api.mymemory.translated.net/get'
+interface M2M100Input {
+  text: string
+  source_lang: string
+  target_lang: string
+}
+
+interface M2M100Output {
+  translated_text: string
+}
+
+type RunTranslate = (model: string, input: M2M100Input) => Promise<M2M100Output>
 
 const truncateGraphemes = (text: string, max: number): string => {
   const seg = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
@@ -10,32 +20,13 @@ const truncateGraphemes = (text: string, max: number): string => {
   return [...seg.segment(text)].slice(0, max).map(s => s.segment).join('')
 }
 
-/**
- * Free tier machine translation (MyMemory). Fails softly on quota or network errors.
- */
-const translateMyMemory = async (text: string, from: Locale, to: Locale): Promise<string | null> => {
+const translateWorkerAI = async (ai: Ai, text: string, from: Locale, to: Locale): Promise<string | null> => {
   if (from === to) return null
 
-  const langpair = `${from}|${to}`
-  const url = new URL(MYMEMORY)
-
-  url.searchParams.set('q', text)
-
-  url.searchParams.set('langpair', langpair)
-
   try {
-    const res = await fetch(url.toString(), { signal: AbortSignal.timeout(12_000) })
-
-    if (!res.ok) return null
-
-    const json: {
-      responseStatus?: number
-      responseData?: { translatedText?: string }
-    } = await res.json()
-
-    if (json.responseStatus !== undefined && json.responseStatus !== 200) return null
-
-    const out = json.responseData?.translatedText?.trim()
+    const input: M2M100Input = { text, source_lang: from, target_lang: to } // eslint-disable-line camelcase
+    const result = await (ai.run as unknown as RunTranslate)('@cf/meta/m2m100-1.2b', input)
+    const out = result.translated_text.trim()
 
     if (!out) return null
 
@@ -51,10 +42,9 @@ interface MirrorPostParams {
   sourceLocale: Locale
 }
 
-/** Inserts the other-locale row linked via `translation_of` (best-effort). */
-export const mirrorPostTranslation = async (db: D1Database, params: MirrorPostParams): Promise<void> => {
+export const mirrorPostTranslation = async (ai: Ai, db: D1Database, params: MirrorPostParams): Promise<void> => {
   const targetLocale: Locale = params.sourceLocale === 'en' ? 'es' : 'en'
-  const translated = await translateMyMemory(params.content, params.sourceLocale, targetLocale)
+  const translated = await translateWorkerAI(ai, params.content, params.sourceLocale, targetLocale)
 
   if (!translated) return
 
