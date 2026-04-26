@@ -18,7 +18,7 @@
     },
     "test": {
       "dependsOn": ["^build"],
-      "outputs": ["playwright-report/**"]
+      "cache": false
     },
     "deploy": {
       "dependsOn": ["build"]

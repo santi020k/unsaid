@@ -26,13 +26,13 @@ jobs:
       - name: Run Lighthouse (desktop)
         run: pnpm --filter @unsaid/web run lighthouse
         env:
-          PUBLIC_API_URL: https://unsaid-api.workers.dev
+          PUBLIC_API_URL: https://api.unsaid.santi020k.com
           PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
 
       - name: Run Lighthouse (mobile)
         run: pnpm --filter @unsaid/web run lighthouse:mobile
         env:
-          PUBLIC_API_URL: https://unsaid-api.workers.dev
+          PUBLIC_API_URL: https://api.unsaid.santi020k.com
           PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
 
       - uses: actions/upload-artifact@v4

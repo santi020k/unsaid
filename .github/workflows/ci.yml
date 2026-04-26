@@ -68,7 +68,7 @@ jobs:
 
       - run: pnpm turbo run test --filter=@unsaid/web
         env:
-          PUBLIC_API_URL: https://unsaid-api.workers.dev
+          PUBLIC_API_URL: https://api.unsaid.santi020k.com
           PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
 
       - uses: actions/upload-artifact@v4
@@ -98,7 +98,7 @@ jobs:
 
       - run: pnpm turbo run build
         env:
-          PUBLIC_API_URL: https://unsaid-api.workers.dev
+          PUBLIC_API_URL: https://api.unsaid.santi020k.com
           PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
 
   deploy-api:
