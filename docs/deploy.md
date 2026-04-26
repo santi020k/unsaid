@@ -152,6 +152,7 @@ Keep this URL — you'll need it for the Pages environment variable.
 | `PUBLIC_API_URL` | `https://unsaid-api.<your-subdomain>.workers.dev` |
 | `PUBLIC_TURNSTILE_SITE_KEY` | Your Turnstile site key |
 | `NODE_VERSION` | `22` |
+| `PNPM_VERSION` | `10.32.1` |
 
 5. Deploy.
 
@@ -227,7 +228,8 @@ pnpm --filter @unsaid/web dev
 |---|---|---|
 | `PUBLIC_API_URL` | Yes | Full URL of the Workers API |
 | `PUBLIC_TURNSTILE_SITE_KEY` | Yes | Turnstile site key (public, safe to expose) |
-| `NODE_VERSION` | Yes | Set to `22` for Pages build |
+| `NODE_VERSION` | Recommended | Set to `22` for Pages build; `.node-version` also pins this |
+| `PNPM_VERSION` | Recommended | Set to `10.32.1` to match `packageManager` |
 
 ### `apps/api` (Cloudflare Workers)
 
