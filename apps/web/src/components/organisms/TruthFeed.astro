@@ -1,4 +1,6 @@
 ---
+import { Icon } from 'astro-icon/components'
+
 import TruthCard from '@/components/atoms/TruthCard.astro'
 
 import { useTranslations } from '@/i18n/utils'
@@ -46,14 +48,16 @@ const t = useTranslations(locale)
   }
 </section>
 
+<template id="truth-feed-auto-translation-icon">
+  <Icon aria-hidden="true" class="size-3.5 shrink-0 text-accent" name="tabler:language" />
+</template>
+
 <script
   is:inline
   define:vars={{
     locale,
-    badgeOriginalLabel: t('feed.badge_original'),
-    badgeTranslatedLabel: t('feed.badge_translated'),
-    badgeOriginalTitle: t('feed.badge_original_aria'),
-    badgeTranslatedTitle: t('feed.badge_translated_aria')
+    badgeAutoTranslationLabel: t('feed.badge_auto_translation'),
+    badgeAutoTranslationTitle: t('feed.badge_auto_translation_title')
   }}
 >
   let page = 1
@@ -61,11 +65,7 @@ const t = useTranslations(locale)
   const loadMoreBtn = document.getElementById('load-more')
   const apiUrl = feed?.dataset.api?.trim() ?? ''
   const dateLocale = locale === 'es' ? 'es' : 'en'
-
-  const svgDoc =
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-3.5 shrink-0 text-text-muted" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"></path></svg>'
-  const svgArrows =
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-3.5 shrink-0 text-accent" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"></path></svg>'
+  const autoTranslationIconTemplate = document.getElementById('truth-feed-auto-translation-icon')
 
   function formatTruthDate(iso) {
     return new Date(iso).toLocaleDateString(dateLocale, {
@@ -83,19 +83,18 @@ const t = useTranslations(locale)
       'truth-card-interactive'
     if (!options?.pulse) article.dataset.animate = ''
 
-    const meta = document.createElement('div')
-    meta.className = 'mb-3'
-    const badge = document.createElement('span')
-    badge.className = isTranslated ? 'truth-post-badge border-accent/25' : 'truth-post-badge'
-    badge.title = isTranslated ? badgeTranslatedTitle : badgeOriginalTitle
-    const tpl = document.createElement('template')
-    tpl.innerHTML = isTranslated ? svgArrows : svgDoc
-    badge.appendChild(tpl.content.cloneNode(true))
-    badge.appendChild(
-      document.createTextNode(isTranslated ? badgeTranslatedLabel : badgeOriginalLabel)
-    )
-    meta.appendChild(badge)
-    article.appendChild(meta)
+    if (isTranslated) {
+      const meta = document.createElement('div')
+      meta.className = 'mb-3'
+      const badge = document.createElement('span')
+      badge.className = 'truth-post-badge border-accent/25'
+      badge.title = badgeAutoTranslationTitle
+      const iconEl = autoTranslationIconTemplate?.content?.firstElementChild
+      if (iconEl) badge.appendChild(iconEl.cloneNode(true))
+      badge.appendChild(document.createTextNode(badgeAutoTranslationLabel))
+      meta.appendChild(badge)
+      article.appendChild(meta)
+    }
 
     const p = document.createElement('p')
     p.className = 'font-mono text-sm leading-relaxed text-text-primary'

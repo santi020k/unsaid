@@ -14,10 +14,9 @@ export const ui = {
     'feed.title': 'Recent truths',
     'feed.empty': 'No truths yet. Be the first.',
     'feed.load_more': 'Load more',
-    'feed.badge_original': 'Original',
-    'feed.badge_translated': 'Translated',
-    'feed.badge_original_aria': 'Written in this language',
-    'feed.badge_translated_aria': 'Machine-translated from another language',
+    'feed.badge_auto_translation': 'Automated translation',
+    'feed.badge_auto_translation_title':
+      'This text was automatically translated from a post written in another language.',
 
     'form.title': 'Say it.',
     'form.placeholder': 'Type your truth here…',
@@ -55,10 +54,9 @@ export const ui = {
     'feed.title': 'Verdades recientes',
     'feed.empty': 'Sin verdades aún. Sé el primero.',
     'feed.load_more': 'Cargar más',
-    'feed.badge_original': 'Original',
-    'feed.badge_translated': 'Traducción',
-    'feed.badge_original_aria': 'Escrito en este idioma',
-    'feed.badge_translated_aria': 'Traducción automática desde otro idioma',
+    'feed.badge_auto_translation': 'Traducción automática',
+    'feed.badge_auto_translation_title':
+      'Este texto se tradujo automáticamente desde una publicación escrita en otro idioma.',
 
     'form.title': 'Dilo.',
     'form.placeholder': 'Escribe tu verdad aquí…',
