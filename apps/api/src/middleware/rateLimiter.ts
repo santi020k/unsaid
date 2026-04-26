@@ -5,6 +5,12 @@ import type { Bindings } from '../types.js'
 import { DAILY_LIMIT } from '@unsaid/shared'
 
 export const rateLimiter = createMiddleware<{ Bindings: Bindings }>(async (c, next) => {
+  if (c.env.DISABLE_POST_RATE_LIMIT === 'true') {
+    await next()
+
+    return
+  }
+
   const ip = c.req.header('CF-Connecting-IP') ?? 'unknown'
   const today = new Date().toISOString().split('T')[0]
   const key = `rate:${ip}:${today}`

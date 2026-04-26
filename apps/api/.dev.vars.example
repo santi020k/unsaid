@@ -8,3 +8,6 @@ TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 
 # Allowed CORS origin (frontend URL)
 ALLOWED_ORIGIN=http://localhost:4321
+
+# Unset or "false" to enforce the daily per-IP post cap (3) in local dev
+DISABLE_POST_RATE_LIMIT=true
