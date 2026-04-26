@@ -1,0 +1,10 @@
+# Copy this file to .dev.vars — Wrangler uses this for local secrets
+# Never commit .dev.vars
+
+# Cloudflare Turnstile secret key
+# Test key (always passes): 1x0000000000000000000000000000000AA
+# Get real key at: dash.cloudflare.com > Turnstile
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+
+# Allowed CORS origin (frontend URL)
+ALLOWED_ORIGIN=http://localhost:4321
