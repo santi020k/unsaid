@@ -3,6 +3,24 @@ const TURNSTILE_TEST_SITE_KEY = '1x00000000000000000000AA'
 const DEFAULT_API_URL = 'http://localhost:8787'
 const stripTrailingSlashes = (s: string): string => s.replace(/\/+$/, '')
 
+/** Bare host without scheme (e.g. `localhost:8787`, `[::1]:8080`). */
+const isLoopbackBareHost = (input: string): boolean => {
+  let host = input
+  const lastColon = input.lastIndexOf(':')
+
+  if (lastColon !== -1) {
+    const afterColon = input.slice(lastColon + 1)
+
+    if (/^\d+$/.test(afterColon)) {
+      host = input.slice(0, lastColon)
+    }
+  }
+
+  const h = host.toLowerCase()
+
+  return h === 'localhost' || h === '127.0.0.1' || h === '::1' || h === '[::1]'
+}
+
 /** If PUBLIC_API_URL is a bare hostname, assume https (or http for local loopback). */
 const normalizeApiOrigin = (value: string): string => {
   const t = value.trim()
@@ -15,7 +33,7 @@ const normalizeApiOrigin = (value: string): string => {
     return stripTrailingSlashes(t)
   }
 
-  if (/^(localhost|127\.0\.0\.1|::1|\[::1\])(:\d+)?$/i.test(t)) {
+  if (isLoopbackBareHost(t)) {
     return `http://${t}`
   }
 

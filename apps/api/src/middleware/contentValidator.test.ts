@@ -22,7 +22,7 @@ describe('validateContent', () => {
     const run = vi.fn()
 
     const res = await createApp({
-      AI: { run } as Bindings['AI'],
+      AI: { run } as unknown as Bindings['AI'],
       ENABLE_AI_VALIDATION: undefined
     })
 
@@ -37,22 +37,22 @@ describe('validateContent', () => {
     const res = await createApp({
       AI: {
         run: () => Promise.resolve({ response: 'no' })
-      } as Bindings['AI'],
+      } as unknown as Bindings['AI'],
       ENABLE_AI_VALIDATION: 'true'
     })
 
     expect(res.status).toBe(422)
 
-    const body = await res.json()
-
-    expect(body.error).toContain('meaningful')
+    await expect(res.json()).resolves.toEqual({
+      error: 'Your post does not appear to be meaningful content.'
+    })
   })
 
   it('calls next when the model answers yes', async () => {
     const res = await createApp({
       AI: {
         run: () => Promise.resolve({ response: 'yes' })
-      } as Bindings['AI'],
+      } as unknown as Bindings['AI'],
       ENABLE_AI_VALIDATION: 'true'
     })
 
@@ -72,7 +72,7 @@ describe('validateContent', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content: '   ' })
     }, {
-      AI: { run } as Bindings['AI'],
+      AI: { run } as unknown as Bindings['AI'],
       ENABLE_AI_VALIDATION: 'true'
     })
 
@@ -88,7 +88,7 @@ describe('validateContent', () => {
       const run = vi.fn().mockRejectedValue(new Error('Workers AI unavailable'))
 
       const res = await createApp({
-        AI: { run } as Bindings['AI'],
+        AI: { run } as unknown as Bindings['AI'],
         ENABLE_AI_VALIDATION: 'true'
       })
 

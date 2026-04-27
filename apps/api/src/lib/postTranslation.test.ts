@@ -78,7 +78,7 @@ describe('mirrorPostTranslation', () => {
   it('truncates translated text to POST_MAX_LENGTH graphemes', async () => {
     const long = `${'a'.repeat(POST_MAX_LENGTH)}ZZ`
 
-    const bind = vi.fn(() => ({
+    const bind = vi.fn((_text: string, _locale: string, _sourceId: string) => ({
       run: vi.fn(() => Promise.resolve({ success: true, meta: {} }))
     }))
 

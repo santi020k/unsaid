@@ -11,7 +11,8 @@ export default [
   },
   ...eslintConfig({
     typescript: true,
-    frameworks: { astro: astroConfig }
+    frameworks: { astro: astroConfig },
+    tsconfigRootDir: import.meta.dirname
   }),
   {
     name: 'web/tailwind-settings',

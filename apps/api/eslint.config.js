@@ -5,7 +5,8 @@ export default [
   ...eslintConfig({
     typescript: true,
     runtime: Runtime.Worker,
-    frameworks: { hono }
+    frameworks: { hono },
+    tsconfigRootDir: import.meta.dirname
   }),
   {
     name: 'api/ignores',
