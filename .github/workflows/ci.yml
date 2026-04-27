@@ -70,7 +70,7 @@ jobs:
 
       - run: pnpm turbo run test --filter=@unsaid/web
         env:
-          PUBLIC_API_URL: https://api.unsaid.santi020k.com
+          PUBLIC_API_URL: ${{ secrets.PUBLIC_API_URL || 'https://api.unsaid.santi020k.com' }}
           PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
 
       - uses: actions/upload-artifact@v4
@@ -101,7 +101,7 @@ jobs:
 
       - run: pnpm turbo run build
         env:
-          PUBLIC_API_URL: https://api.unsaid.santi020k.com
+          PUBLIC_API_URL: ${{ secrets.PUBLIC_API_URL || 'https://api.unsaid.santi020k.com' }}
           PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
 
   deploy-api:
@@ -174,7 +174,7 @@ jobs:
       - name: Build and deploy Astro Worker
         run: pnpm turbo run deploy --filter=@unsaid/web
         env:
-          PUBLIC_API_URL: https://api.unsaid.santi020k.com
+          PUBLIC_API_URL: ${{ secrets.PUBLIC_API_URL || 'https://api.unsaid.santi020k.com' }}
           PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

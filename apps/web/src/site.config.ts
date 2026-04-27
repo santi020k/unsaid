@@ -1,13 +1,33 @@
 /** Cloudflare Turnstile dummy site key — only for local dev; always passes verification with matching secret. */
 const TURNSTILE_TEST_SITE_KEY = '1x00000000000000000000AA'
 const DEFAULT_API_URL = 'http://localhost:8787'
+const stripTrailingSlashes = (s: string): string => s.replace(/\/+$/, '')
+
+/** If PUBLIC_API_URL is a bare hostname, assume https (or http for local loopback). */
+const normalizeApiOrigin = (value: string): string => {
+  const t = value.trim()
+
+  if (t === '') {
+    return DEFAULT_API_URL
+  }
+
+  if (/^https?:\/\//i.test(t)) {
+    return stripTrailingSlashes(t)
+  }
+
+  if (/^(localhost|127\.0\.0\.1|::1|\[::1\])(:\d+)?$/i.test(t)) {
+    return `http://${t}`
+  }
+
+  return stripTrailingSlashes(`https://${t.replace(/^\/+/, '')}`)
+}
 
 /** Workers API origin (no trailing slash). Empty env must not become a relative URL. */
 const resolveApiUrl = (): string => {
   const raw = import.meta.env.PUBLIC_API_URL
 
   if (typeof raw === 'string' && raw.trim() !== '') {
-    return raw.trim().replace(/\/+$/, '')
+    return normalizeApiOrigin(raw)
   }
 
   return DEFAULT_API_URL
