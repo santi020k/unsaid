@@ -68,7 +68,7 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm --filter @unsaid/web exec playwright install-deps chromium
 
-      - run: pnpm turbo run test --filter=@unsaid/web
+      - run: pnpm turbo run test --filter=@unsaid/web --filter=@unsaid/api
         env:
           PUBLIC_API_URL: ${{ secrets.PUBLIC_API_URL || 'https://api.unsaid.santi020k.com' }}
           PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA

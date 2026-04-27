@@ -9,6 +9,6 @@ export default [
   }),
   {
     name: 'api/ignores',
-    ignores: ['dist/**', 'node_modules/**', '.wrangler/**']
+    ignores: ['dist/**', 'node_modules/**', '.wrangler/**', 'vitest.config.ts']
   }
 ]
