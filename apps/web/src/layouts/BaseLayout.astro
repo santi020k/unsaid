@@ -110,15 +110,19 @@ const footerLegalLinks = [
     >
       <nav
         aria-label={t('nav.main')}
-        class="mx-auto flex w-full min-w-0 max-w-2xl items-center justify-between p-4"
+        class="
+          mx-auto flex w-full max-w-2xl min-w-0 items-center justify-between p-4
+        "
       >
         <a
           href={homePath}
           class="
             flex items-center transition-[opacity,transform] duration-200
-            ease-out hover:scale-[1.03] hover:opacity-90
+            ease-out
+            hover:scale-[1.03] hover:opacity-90
             active:scale-[0.98]
-            motion-reduce:transition-opacity motion-reduce:hover:scale-100
+            motion-reduce:transition-opacity
+            motion-reduce:hover:scale-100
             motion-reduce:active:scale-100
           "
           aria-label={SITE.name}
@@ -134,10 +138,12 @@ const footerLegalLinks = [
             href={altPath}
             class="
               relative text-sm text-text-muted transition-colors duration-200
-              after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-0.5
-              after:h-px after:origin-left after:scale-x-0 after:bg-accent/50
-              after:transition-transform after:duration-200 after:ease-out
-              hover:text-text-primary hover:after:scale-x-100
+              after:pointer-events-none after:absolute after:inset-x-0
+              after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0
+              after:bg-accent/50 after:transition-transform after:duration-200
+              after:ease-out
+              hover:text-text-primary
+              hover:after:scale-x-100
               motion-reduce:after:hidden
             "
           >
@@ -224,6 +230,43 @@ const footerLegalLinks = [
     </footer>
 
     <script>
+      // View-transition origin from the activated in-app link (click + keyboard; matches theme-toggle reveal).
+      document.addEventListener('click', event => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          return
+        }
+
+        const target = event.target
+
+        if (!(target instanceof Element)) {
+          return
+        }
+
+        const link = target.closest('a[href]')
+
+        if (!(link instanceof HTMLAnchorElement)) {
+          return
+        }
+
+        try {
+          const next = new URL(link.href, window.location.href)
+
+          if (next.origin !== window.location.origin) {
+            return
+          }
+        } catch {
+          return
+        }
+
+        const rect = link.getBoundingClientRect()
+        const x = ((rect.left + rect.width / 2) / window.innerWidth) * 100
+        const y = ((rect.top + rect.height / 2) / window.innerHeight) * 100
+
+        document.documentElement.style.setProperty('--vt-origin-x', `${x}%`)
+
+        document.documentElement.style.setProperty('--vt-origin-y', `${y}%`)
+      }, true)
+
       // Scroll-triggered reveal
       const observer = new IntersectionObserver(
         entries => {
