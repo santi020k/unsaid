@@ -103,35 +103,42 @@ const footerLegalLinks = [
     <a href="#main-content" class="skip-link">{t('nav.skip_to_content')}</a>
 
     <header class="
-      sticky top-0 z-40 animate-header-enter border-b border-border bg-void/90
-      backdrop-blur-sm
+      sticky top-0 z-40 min-w-0 animate-header-enter border-b border-border
+      bg-void/90 backdrop-blur-sm
       motion-reduce:animate-none
     "
     >
       <nav
         aria-label={t('nav.main')}
-        class="mx-auto flex max-w-2xl items-center justify-between p-4"
+        class="mx-auto flex w-full min-w-0 max-w-2xl items-center justify-between p-4"
       >
         <a
           href={homePath}
           class="
-            flex items-center transition-opacity duration-150
-            hover:opacity-80
+            flex items-center transition-[opacity,transform] duration-200
+            ease-out hover:scale-[1.03] hover:opacity-90
+            active:scale-[0.98]
+            motion-reduce:transition-opacity motion-reduce:hover:scale-100
+            motion-reduce:active:scale-100
           "
           aria-label={SITE.name}
         >
           <img
             src="/logo-simple-cropped-transparent.webp"
             alt={SITE.name}
-            class="h-8 w-auto object-contain"
+            class="h-8 w-auto origin-center object-contain"
           />
         </a>
         <div class="flex items-center gap-4">
           <a
             href={altPath}
             class="
-              text-sm text-text-muted transition-colors duration-150
-              hover:text-text-primary
+              relative text-sm text-text-muted transition-colors duration-200
+              after:pointer-events-none after:absolute after:inset-x-0 after:-bottom-0.5
+              after:h-px after:origin-left after:scale-x-0 after:bg-accent/50
+              after:transition-transform after:duration-200 after:ease-out
+              hover:text-text-primary hover:after:scale-x-100
+              motion-reduce:after:hidden
             "
           >
             {t('nav.lang')}

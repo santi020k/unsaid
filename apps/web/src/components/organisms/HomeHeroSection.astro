@@ -1,0 +1,59 @@
+---
+import { useTranslations } from '@/i18n/utils'
+import type { SupportedLocale } from '@/site.config'
+
+interface Props {
+  locale: SupportedLocale
+}
+
+const { locale } = Astro.props
+const t = useTranslations(locale)
+
+const headlineLines = t('hero.headline')
+  .split('\n')
+  .map(s => s.trim())
+  .filter(Boolean)
+
+const subDelayMs = 40 + headlineLines.length * 72 + 48
+---
+
+<section class="section-shell pt-24 pb-16 text-center">
+  <p
+    class="
+      mb-6 animate-fade-in text-label
+      motion-reduce:animate-none
+    "
+  >
+    {t('hero.eyebrow')}
+  </p>
+  <h1
+    class="
+      hero-headline-stack mb-6 text-4xl
+      sm:text-5xl
+      lg:text-6xl
+    "
+  >
+    {
+      headlineLines.map((line, i) => (
+        <span
+          class="
+            hero-headline-line animate-hero-line-in
+            motion-reduce:animate-none
+          "
+          style={`animation-delay: ${String(40 + i * 72)}ms`}
+        >
+          {line}
+        </span>
+      ))
+    }
+  </h1>
+  <p
+    class="
+      animate-slide-up text-lg text-text-muted
+      motion-reduce:animate-none
+    "
+    style={`animation-delay: ${String(subDelayMs)}ms`}
+  >
+    {t('hero.sub')}
+  </p>
+</section>

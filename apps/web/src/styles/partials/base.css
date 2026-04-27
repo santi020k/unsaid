@@ -12,11 +12,13 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
   body {
     @apply bg-void text-text-primary font-sans;
     min-height: 100dvh;
+    overflow-x: clip;
   }
 
   ::selection {

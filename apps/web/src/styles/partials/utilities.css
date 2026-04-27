@@ -1,6 +1,6 @@
 /* ── Layout ──────────────────────────────────────── */
 @utility section-shell {
-  @apply mx-auto max-w-2xl px-4 py-16;
+  @apply mx-auto w-full min-w-0 max-w-2xl px-4 py-16;
 }
 
 @utility section-shell-wide {
@@ -66,6 +66,17 @@
 /* ── Typography ──────────────────────────────────── */
 @utility heading-display {
   @apply font-display font-bold tracking-tight text-text-primary;
+}
+
+/** Home hero title: tight display without clipping g, y, p descenders (avoid leading-none). */
+@utility hero-headline-stack {
+  @apply heading-display flex w-full min-w-0 flex-col gap-y-1 text-center;
+  line-height: 1.2;
+}
+
+/** One phrase per span; wrap in-column (nowrap + narrow max-* breakpoint was overflowing most phones). */
+@utility hero-headline-line {
+  @apply block w-full min-w-0 max-w-full text-balance text-center whitespace-normal;
 }
 
 @utility text-label {

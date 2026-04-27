@@ -1,14 +1,13 @@
 ---
 import PostForm from '@/components/molecules/PostForm.astro'
+import HomeHeroSection from '@/components/organisms/HomeHeroSection.astro'
 import TruthFeed from '@/components/organisms/TruthFeed.astro'
 
-import { useTranslations } from '@/i18n/utils'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import { SITE } from '@/site.config'
 import { FEED_PAGE_SIZE, type Post } from '@unsaid/shared'
 
 const locale = 'en'
-const t = useTranslations(locale)
 let initialPosts: Post[] = []
 let initialHasMore = false
 
@@ -30,36 +29,7 @@ try {
 ---
 
 <BaseLayout locale={locale}>
-  <!-- Hero -->
-  <section class="section-shell pt-24 pb-16 text-center">
-    <p class="
-      mb-6 animate-fade-in text-label
-      motion-reduce:animate-none
-    "
-    >
-      {t('hero.eyebrow')}
-    </p>
-    <h1
-      class="
-        mb-6 animate-slide-up heading-display text-5xl leading-none
-        whitespace-pre-line
-        motion-reduce:animate-none
-        sm:text-6xl
-      "
-      style="animation-delay: 40ms"
-    >
-      {t('hero.headline')}
-    </h1>
-    <p
-      class="
-        animate-slide-up text-lg text-text-muted
-        motion-reduce:animate-none
-      "
-      style="animation-delay: 120ms"
-    >
-      {t('hero.sub')}
-    </p>
-  </section>
+  <HomeHeroSection locale={locale} />
 
   <!-- Publish form -->
   <div class="section-shell pt-0">
