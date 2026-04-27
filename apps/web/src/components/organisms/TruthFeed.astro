@@ -108,32 +108,25 @@ const t = useTranslations(locale)
   let page = 1
   let hasMore = initialMoreAttr === '1'
   let loadInFlight = false
-  /** Prevents the sentinel from loading the next page before the user has scrolled. */
-  let userHasScrolled = false
+  /** IntersectionObserver only attaches after the first successful "Load more" click. */
   const supportsIntersectionObserver = typeof window.IntersectionObserver === 'function'
-  if (typeof window.addEventListener === 'function') {
-    window.addEventListener(
-      'scroll',
-      () => {
-        userHasScrolled = true
-      },
-      { once: true, passive: true }
-    )
-  }
-
   let io = null
-  if (hasMore && supportsIntersectionObserver && feedSentinel) {
+
+  function attachInfiniteScrollObserver() {
+    if (io || !hasMore || !supportsIntersectionObserver || !feedSentinel) return
+
     io = new window.IntersectionObserver(
-      (entries) => {
+      entries => {
         for (const entry of entries) {
           if (!entry.isIntersecting) return
-          if (!userHasScrolled) return
+
           if (!hasMore) return
+
           void loadNext('scroll')
         }
-      },
-      { root: null, rootMargin: '100px 0px', threshold: 0 }
+      }, { root: null, rootMargin: '100px 0px', threshold: 0 }
     )
+
     io.observe(feedSentinel)
   }
 
@@ -142,9 +135,11 @@ const t = useTranslations(locale)
 
     if (visible) {
       feedLoading.classList.remove('hidden')
+
       feedLoading.textContent = msgLoading
     } else {
       feedLoading.classList.add('hidden')
+
       feedLoading.textContent = ''
     }
   }
@@ -159,71 +154,118 @@ const t = useTranslations(locale)
 
   function buildPendingArticle(tempId, content) {
     const article = document.createElement('article')
+
     article.setAttribute('data-optimistic-id', tempId)
+
     article.className = 'truth-card-interactive truth-optimistic-pending'
 
     const p = document.createElement('p')
+
     p.className = 'font-mono text-sm leading-relaxed text-text-primary'
+
     p.textContent = content
+
     article.appendChild(p)
 
     const footer = document.createElement('footer')
+
     footer.className = 'mt-4 flex items-center gap-3'
+
     const dot = document.createElement('span')
+
     dot.className = 'accent-dot'
+
     const status = document.createElement('span')
+
     status.className = 'text-xs text-text-faint'
+
     status.textContent = msgPending
+
     footer.appendChild(dot)
+
     footer.appendChild(status)
+
     article.appendChild(footer)
+
     return article
   }
 
   function buildTruthArticle(post, options) {
     const isTranslated = Boolean(post.translation_of)
     const article = document.createElement('article')
+
     article.className = options?.pulse ? 'truth-card-interactive truth-published-celebrate' : 'truth-card-interactive'
+
     if (!options?.pulse) article.dataset.animate = ''
+
     if (isTranslated) {
       const meta = document.createElement('div')
+
       meta.className = 'mb-3'
+
       const badge = document.createElement('span')
+
       badge.className = 'truth-post-badge border-accent/25'
+
       badge.title = badgeAutoTranslationTitle
+
       const iconEl = autoTranslationIconTemplate?.content?.firstElementChild
+
       if (iconEl) badge.appendChild(iconEl.cloneNode(true))
+
       badge.appendChild(document.createTextNode(badgeAutoTranslationLabel))
+
       meta.appendChild(badge)
+
       article.appendChild(meta)
     }
+
     const p = document.createElement('p')
+
     p.className = 'font-mono text-sm leading-relaxed text-text-primary'
+
     p.textContent = post.content
+
     article.appendChild(p)
+
     const footer = document.createElement('footer')
+
     footer.className = 'mt-4 flex items-center gap-3'
+
     const dot = document.createElement('span')
+
     dot.className = 'accent-dot'
+
     const timeEl = document.createElement('time')
+
     timeEl.className = 'text-xs text-text-faint'
+
     timeEl.dateTime = post.created_at
+
     timeEl.textContent = formatTruthDate(post.created_at)
+
     footer.appendChild(dot)
+
     footer.appendChild(timeEl)
+
     article.appendChild(footer)
+
     return article
   }
 
   /** Posts array, or null if the request failed (network / offline). */
   async function fetchPosts(p) {
     if (!apiUrl) return null
+
     try {
       const res = await fetch(
         `${apiUrl}/api/posts?locale=${locale}&page=${p}&limit=${String(pageSize)}`
       )
+
       if (!res.ok) return []
+
       const json = await res.json()
+
       return json.data?.posts ?? []
     } catch {
       return null
@@ -232,61 +274,89 @@ const t = useTranslations(locale)
 
   function hidePagination() {
     hasMore = false
+
     if (io) {
       io.disconnect()
+
       io = null
     }
+
     loadMoreBtn?.setAttribute('hidden', '')
+
     feedLoading?.setAttribute('hidden', '')
+
     feedSentinel?.setAttribute('hidden', '')
+
     feedPagination?.setAttribute('hidden', '')
   }
 
   async function loadNext(source) {
     if (loadInFlight) return
+
     if (!hasMore) return
+
     if (!apiUrl) return
+
     if (!feed) return
 
-    if (source === 'click') userHasScrolled = true
     loadInFlight = true
+
     if (loadMoreBtn) {
       loadMoreBtn.setAttribute('disabled', '')
     }
+
     if (source === 'click') {
       setLoading(true)
     }
 
     page += 1
+
     const posts = await fetchPosts(page)
+
     if (posts === null) {
       setLoading(false)
+
       if (loadMoreBtn) {
         page -= 1
+
         loadMoreBtn.removeAttribute('disabled')
       }
+
       loadInFlight = false
+
       return
     }
+
     if (posts.length === 0) {
       setLoading(false)
+
       hidePagination()
+
       loadInFlight = false
+
       return
     }
 
     for (const post of posts) {
       const article = buildTruthArticle(post, {})
+
       feed.appendChild(article)
+
       void article.offsetWidth
+
       requestAnimationFrame(() => article.classList.add('is-visible'))
     }
 
     setLoading(false)
+
     if (loadMoreBtn) loadMoreBtn.removeAttribute('disabled')
+
     if (posts.length < pageSize) {
       hidePagination()
+    } else if (source === 'click') {
+      attachInfiniteScrollObserver()
     }
+
     loadInFlight = false
   }
 
@@ -294,45 +364,69 @@ const t = useTranslations(locale)
     void loadNext('click')
   })
 
-  window.addEventListener('truth:optimistic-start', (ev) => {
+  window.addEventListener('truth:optimistic-start', ev => {
     if (!feed) return
+
     const detail = ev && ev.detail
+
     if (!detail || !detail.content || !detail.tempId) return
+
     const empty = document.getElementById('feed-empty-state')
+
     if (empty) empty.remove()
+
     const article = buildPendingArticle(detail.tempId, String(detail.content))
+
     feed.insertBefore(article, feed.firstChild)
+
     if (feed.getAttribute('data-stagger') !== null) {
       requestAnimationFrame(() => article.classList.add('is-visible'))
     }
   })
 
-  window.addEventListener('truth:optimistic-revert', (ev) => {
+  window.addEventListener('truth:optimistic-revert', ev => {
     if (!feed) return
+
     const id = ev?.detail?.tempId
+
     if (!id) return
+
     const pending = feed.querySelector(`[data-optimistic-id="${id}"]`)
+
     pending?.remove()
+
     if (feed.children.length) return
+
     const p = document.createElement('p')
+
     p.id = 'feed-empty-state'
+
     p.className = 'py-8 text-center text-sm text-text-muted'
+
     p.textContent = emptyFeedText
+
     feed.appendChild(p)
   })
 
-  window.addEventListener('truth:publish-success', (ev) => {
+  window.addEventListener('truth:publish-success', ev => {
     if (!feed) return
+
     const detail = ev && ev.detail
     const post = detail?.post
     const tempId = detail?.tempId
+
     if (!post || !tempId) return
+
     const existing = feed.querySelector(`[data-optimistic-id="${String(tempId)}"]`)
     const es = document.getElementById('feed-empty-state')
+
     if (es) es.remove()
+
     const article = buildTruthArticle(post, { pulse: true })
+
     if (existing) existing.replaceWith(article)
     else feed.insertBefore(article, feed.firstChild)
+
     requestAnimationFrame(() => {
       article.classList.add('is-visible')
     })

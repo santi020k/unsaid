@@ -1,4 +1,6 @@
 ---
+import { ClientRouter } from 'astro:transitions'
+
 import TablerIcon from '@/components/atoms/TablerIcon.astro'
 
 import '@/styles/global.css'
@@ -51,6 +53,7 @@ const footerLegalLinks = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <ClientRouter fallback="swap" />
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonicalURL} />
@@ -100,13 +103,16 @@ const footerLegalLinks = [
     <slot name="head" />
   </head>
   <body>
-    <a href="#main-content" class="skip-link">{t('nav.skip_to_content')}</a>
+    <a href="#main-content" class="skip-link" transition:persist="layout-skip">
+      {t('nav.skip_to_content')}
+    </a>
 
-    <header class="
+    <header
+      class="
       sticky top-0 z-40 min-w-0 animate-header-enter border-b border-border
-      bg-void/90 backdrop-blur-sm
-      motion-reduce:animate-none
-    "
+        bg-void/90 backdrop-blur-sm
+        motion-reduce:animate-none
+      "
     >
       <nav
         aria-label={t('nav.main')}
@@ -136,6 +142,7 @@ const footerLegalLinks = [
         <div class="flex items-center gap-4">
           <a
             href={altPath}
+            data-astro-reload
             class="
               relative text-sm text-text-muted transition-colors duration-200
               after:pointer-events-none after:absolute after:inset-x-0
@@ -157,7 +164,10 @@ const footerLegalLinks = [
       <slot />
     </main>
 
-    <footer class="mt-24 border-t border-border bg-surface/35">
+    <footer
+      transition:persist="layout-footer"
+      class="mt-24 border-t border-border bg-surface/35"
+    >
       <div
         class="
           mx-auto max-w-2xl px-4 py-12
@@ -280,7 +290,15 @@ const footerLegalLinks = [
         }, { threshold: 0.1 }
       )
 
-      document.querySelectorAll('[data-animate], [data-stagger]').forEach(el => observer.observe(el))
+      const observeScrollRevealTargets = () => {
+        document.querySelectorAll('[data-animate], [data-stagger]').forEach(el => {
+          observer.observe(el)
+        })
+      }
+
+      observeScrollRevealTargets()
+
+      document.addEventListener('astro:page-load', observeScrollRevealTargets)
     </script>
   </body>
 </html>
