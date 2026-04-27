@@ -13,7 +13,26 @@ const parseOrigins = (raw: string | undefined): string[] => {
   return origins.map(origin => origin.trim()).filter(Boolean)
 }
 
+/** Browsers send this origin for any port on loopback during local dev (e.g. Astro :4321). */
+const isHttpLoopbackOrigin = (origin: string): boolean => {
+  try {
+    const u = new URL(origin)
+    const h = u.hostname.toLowerCase()
+
+    return (
+      u.protocol === 'http:' &&
+      (h === 'localhost' || h === '127.0.0.1' || h === '[::1]' || h === '::1')
+    )
+  } catch {
+    return false
+  }
+}
+
 const resolveCorsOrigin = (origin: string, c: Context<{ Bindings: Bindings }>): string | null => {
+  if (isHttpLoopbackOrigin(origin)) {
+    return origin
+  }
+
   const allowedOrigins = [
     ...parseOrigins(c.env.ALLOWED_ORIGINS),
     ...parseOrigins(c.env.ALLOWED_ORIGIN)
