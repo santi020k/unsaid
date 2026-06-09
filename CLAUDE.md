@@ -4,6 +4,18 @@ This file gives AI agents full context for working on this codebase. Read it ent
 
 ---
 
+## Mandatory: code standards gate
+
+**Before marking any task complete**, run the `code-standards` skill:
+
+```
+/code-standards
+```
+
+This skill verifies ESLint, TypeScript, formatting, import order, and all project-specific conventions. A task is not done until `pnpm lint` and `pnpm check` both pass with no new errors.
+
+---
+
 ## Project overview
 
 **Unsaid** is an anonymous truth-sharing platform. Users post short, honest observations about life — no accounts, no tracking. The stack is entirely Cloudflare-native.

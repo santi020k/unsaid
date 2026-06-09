@@ -60,9 +60,16 @@ export const SITE = {
   defaultLocale: 'en' as const,
   locales: ['en', 'es'] as const,
   apiUrl: resolveApiUrl(),
-  turnstileSiteKey:
-    import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ??
-      (import.meta.env.DEV ? TURNSTILE_TEST_SITE_KEY : '')
+  turnstileSiteKey: (() => {
+    const raw = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY
+    const trimmed = typeof raw === 'string' ? raw.trim() : ''
+
+    if (trimmed !== '') {
+      return trimmed
+    }
+
+    return import.meta.env.DEV ? TURNSTILE_TEST_SITE_KEY : ''
+  })()
 }
 
 export type SupportedLocale = (typeof SITE.locales)[number]
