@@ -45,7 +45,7 @@ The frontend SSR-fetches the initial post list at request time. If that fetch fa
 
 | Tool | Version | Notes |
 |---|---|---|
-| Node.js | ≥ 22 | See `.node-version` |
+| Node.js | ≥ 22.12 | See `.node-version` |
 | pnpm | 10.32.1 | Pinned in `packageManager` field |
 | Turborepo | ^2.10.x | Task orchestration |
 | Astro | ^7.2.x | `output: 'server'` mode |

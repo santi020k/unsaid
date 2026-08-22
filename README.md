@@ -39,7 +39,7 @@ unsaid/
 
 ### Prerequisites
 
-- Node.js ≥ 22 (see `.node-version`)
+- Node.js ≥ 22.12 (see `.node-version`)
 - pnpm ≥ 10 — `npm i -g pnpm`
 - Wrangler CLI — installed as a local devDependency
 
