@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.12.0"
   },
   "repository": {
     "type": "git",
@@ -27,23 +27,23 @@
     "lighthouse:mobile": "lhci autorun --config=lighthouserc.mobile.cjs"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.2.1",
-    "@astrojs/sitemap": "^3.3.1",
-    "@tailwindcss/vite": "^4.1.5",
+    "@astrojs/cloudflare": "^14.2.3",
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.3.3",
     "@unsaid/shared": "workspace:^",
-    "astro": "^6.1.9",
+    "astro": "^7.2.4",
     "astro-robots-txt": "^1.0.0",
-    "tailwindcss": "^4.1.5"
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "wrangler": "^4.85.0",
-    "@astrojs/check": "^0.9.8",
-    "@astrojs/ts-plugin": "^1.10.7",
-    "@axe-core/playwright": "^4.11.2",
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/ts-plugin": "^1.10.11",
+    "@axe-core/playwright": "^4.13.0",
     "@lhci/cli": "^0.15.1",
-    "@playwright/test": "^1.49.0",
-    "@santi020k/eslint-config-astro": "^1.5.0",
-    "@santi020k/eslint-config-basic": "^1.5.0",
-    "typescript": "^6.0.3"
+    "@playwright/test": "^1.62.1",
+    "@santi020k/eslint-config-astro": "^1.6.0",
+    "@santi020k/eslint-config-basic": "^1.6.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.125.0"
   }
 }

@@ -6,9 +6,9 @@ const config: KnipConfig = {
       entry: ['package.json'],
     },
     'apps/web': {
-      entry: ['src/pages/**/*.astro', 'package.json', 'playwright.config.ts'],
+      entry: ['src/pages/**/*.astro', 'package.json'],
       project: ['src/**/*.{ts,astro}', 'tests/**/*.ts'],
-      ignoreDependencies: ['tailwindcss', '@lhci/cli'],
+      ignoreDependencies: ['tailwindcss'],
     },
     'apps/api': {
       entry: ['wrangler.toml'],
