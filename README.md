@@ -11,7 +11,7 @@ An anonymous platform for sharing hard truths and unfiltered observations about 
 | Layer | Technology |
 |---|---|
 | Monorepo | Turborepo + pnpm workspaces |
-| Frontend | Astro 6 + Tailwind CSS v4 |
+| Frontend | Astro 7 + Tailwind CSS v4 |
 | Backend | Hono on Cloudflare Workers |
 | Database | Cloudflare D1 (SQLite at the edge) |
 | Rate limiting | Cloudflare KV |
@@ -25,7 +25,7 @@ An anonymous platform for sharing hard truths and unfiltered observations about 
 ```
 unsaid/
 ├── apps/
-│   ├── web/              Astro 6 frontend → Cloudflare Worker (static assets + SSR)
+│   ├── web/              Astro 7 frontend → Cloudflare Worker (static assets + SSR)
 │   └── api/              Hono backend → Cloudflare Workers
 ├── packages/
 │   └── shared/           TypeScript types shared across apps
@@ -103,6 +103,13 @@ pnpm --filter @unsaid/api run db:migrate
 | `pnpm test` | Run test suites |
 | `pnpm spellcheck` | cspell on Markdown and JSON files |
 | `pnpm knip` | Detect unused exports and dependencies |
+| `pnpm verify` | Run the complete local pull-request gate |
+
+Pull requests run `pnpm verify` in one read-only GitHub Actions job. Production
+deployment remains a separate, single job that runs only after changes reach
+`main`, avoiding a duplicate post-merge quality build. CodeQL runs for relevant
+pull requests and once per month.
+
 ## Contributing
 
 This project enforces Conventional Commits via a `commit-msg` hook:
@@ -122,3 +129,4 @@ The `pre-push` hook runs spellcheck, lint, and type-check across all workspaces.
 - [Brand guidelines](docs/brand.md) — colors, typography, tone of voice
 - [Deployment guide](docs/deploy.md) — step-by-step Cloudflare setup
 - [CLAUDE.md](CLAUDE.md) — AI agent context for development sessions
+- [Security policy](SECURITY.md) — private vulnerability reporting

@@ -38,17 +38,18 @@
     "deploy:web": "pnpm turbo run deploy --filter=@unsaid/web",
     "spellcheck": "cspell '**/*.{md,json}' --no-progress --exclude '**/node_modules/**' --exclude '**/dist/**'",
     "knip": "knip",
+    "verify": "pnpm audit --audit-level high && pnpm run spellcheck && pnpm run build && pnpm run lint && pnpm run check && pnpm run knip && pnpm run test",
     "pre-commit": "lint-staged --quiet",
     "pre-push": "pnpm run spellcheck && turbo run lint check",
     "prepare": "husky"
   },
   "devDependencies": {
-    "cspell": "^8.17.3",
-    "eslint": "^10.2.1",
+    "cspell": "^8.19.4",
+    "eslint": "^10.9.0",
     "husky": "^9.1.7",
-    "knip": "^5.44.0",
-    "lint-staged": "^15.5.1",
-    "turbo": "^2.5.4",
+    "knip": "^5.88.1",
+    "lint-staged": "^15.5.2",
+    "turbo": "^2.10.11",
     "typescript": "^6.0.3"
   },
   "lint-staged": {
@@ -67,6 +68,8 @@
   },
   "pnpm": {
     "overrides": {
+      "tmp": "0.2.7",
+      "uuid": "11.1.1",
       "yaml": "^2.8.3"
     },
     "onlyBuiltDependencies": [

@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 const host = '127.0.0.1'
-const port = 4321
+const port = 4397
 const baseURL = `http://${host}:${port}`
 const isCi = Boolean(process.env.CI)
 
@@ -28,7 +28,11 @@ export default defineConfig({
   ],
   webServer: {
     command: `pnpm exec astro dev --host ${host} --port ${port}`,
-    reuseExistingServer: !isCi,
+    env: {
+      ...process.env,
+      ASTRO_DEV_BACKGROUND: '0'
+    },
+    reuseExistingServer: false,
     timeout: 120_000,
     url: baseURL
   }

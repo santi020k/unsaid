@@ -28,15 +28,15 @@
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
     "@unsaid/shared": "workspace:^",
-    "hono": "^4.12.15",
-    "zod": "^3.24.3"
+    "hono": "^4.13.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250430.0",
-    "@santi020k/eslint-config-basic": "^1.5.0",
-    "@santi020k/eslint-config-hono": "^1.5.0",
+    "@cloudflare/workers-types": "^5.20260822.1",
+    "@santi020k/eslint-config-basic": "^1.6.0",
+    "@santi020k/eslint-config-hono": "^1.6.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.5",
-    "wrangler": "^4.85.0"
+    "vitest": "^4.1.11",
+    "wrangler": "^4.125.0"
   }
 }

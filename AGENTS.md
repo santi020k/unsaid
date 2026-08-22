@@ -32,7 +32,7 @@ Key constraints that must never be violated:
 ## Architecture
 
 ```
-apps/web   →  Astro 6 + Tailwind v4  →  Cloudflare Worker + static assets (SSR via @astrojs/cloudflare)
+apps/web   →  Astro 7 + Tailwind v4  →  Cloudflare Worker + static assets (SSR via @astrojs/cloudflare)
 apps/api   →  Hono 4               →  Cloudflare Workers (wrangler deploy)
 packages/shared  →  TypeScript types used by both apps (Post, CreatePostBody, etc.)
 ```
@@ -47,15 +47,15 @@ The frontend SSR-fetches the initial post list at request time. If that fetch fa
 |---|---|---|
 | Node.js | ≥ 22 | See `.node-version` |
 | pnpm | 10.32.1 | Pinned in `packageManager` field |
-| Turborepo | ^2.5.4 | Task orchestration |
-| Astro | ^6.1.9 | `output: 'server'` mode |
-| `@astrojs/cloudflare` | ^13.x | Adapter for Cloudflare Workers (not legacy Pages static hosting) |
+| Turborepo | ^2.10.x | Task orchestration |
+| Astro | ^7.2.x | `output: 'server'` mode |
+| `@astrojs/cloudflare` | ^14.x | Adapter for Cloudflare Workers (not legacy Pages static hosting) |
 | Tailwind CSS | ^4.x | v4 syntax — `@theme`, `@utility`, not `theme.extend` |
-| Hono | ^4.12.x | Cloudflare Workers framework |
-| Wrangler | ^4.85.x | CF Workers CLI |
+| Hono | ^4.13.x | Cloudflare Workers framework |
+| Wrangler | ^4.125.x | CF Workers CLI |
 | TypeScript | ^6.x | Strictest mode |
 | ESLint | ^10.x | Flat config only |
-| `@santi020k/eslint-config-basic` | ^1.5.x | Always use this — never configure ESLint from scratch |
+| `@santi020k/eslint-config-basic` | ^1.6.x | Always use this — never configure ESLint from scratch |
 
 ---
 
